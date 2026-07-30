@@ -1,0 +1,13 @@
+# 密钥文件，绝对不上传
+../.env
+# Python虚拟环境
+.venv/
+venv/
+# 代码缓存文件
+__pycache__/
+*.pyc
+# 日志、临时文件
+*.log
+*.tmp
+# 系统隐藏文件
+.DS_Stores
