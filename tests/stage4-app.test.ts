@@ -38,6 +38,15 @@ test("sidebar supports quick project creation and project list navigation", () =
   assert.equal(source.includes('prompt("新增项目名称"'), false);
 });
 
+test("each custom project opens as a dedicated project page", () => {
+  const source = readFileSync("src/App.tsx", "utf8");
+
+  assert.match(source, /className="project-page"/);
+  assert.match(source, /先在左侧快速新增一个项目/);
+  assert.doesNotMatch(source, /<ProjectPage\s+[^>]*data=/);
+  assert.doesNotMatch(source, /<h2>项目列表<\/h2>/);
+});
+
 test("home page renders an automatically sorted timeline section", () => {
   const source = readFileSync("src/App.tsx", "utf8");
 

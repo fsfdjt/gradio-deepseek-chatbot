@@ -272,10 +272,7 @@ export default function App() {
         ) : null}
         {activePage === "project" ? (
           <ProjectPage
-            data={data}
             selectedProject={selectedProject}
-            onSelect={setSelectedProjectId}
-            onAddProject={(input) => mutate((value) => addCustomProject(value, input))}
             onUpdateProject={(id, patch) =>
               mutate((value) => updateCustomProject(value, id, patch))
             }
@@ -806,20 +803,14 @@ function FunPage({
 }
 
 function ProjectPage({
-  data,
   selectedProject,
-  onSelect,
-  onAddProject,
   onUpdateProject,
   onDeleteProject,
   onAddItem,
   onUpdateItem,
   onDeleteItem,
 }: {
-  data: AppData;
   selectedProject?: AppData["customProjects"][number];
-  onSelect: (id: string) => void;
-  onAddProject: (input: Parameters<typeof addCustomProject>[1]) => void;
   onUpdateProject: (id: string, patch: Parameters<typeof updateCustomProject>[2]) => void;
   onDeleteProject: (id: string) => void;
   onAddItem: (projectId: string, input: Parameters<typeof addCustomItem>[2]) => void;
@@ -833,26 +824,7 @@ function ProjectPage({
   const [itemTitle, setItemTitle] = useState("");
 
   return (
-    <section className="custom-grid">
-      <div className="panel">
-        <div className="panel-heading">
-          <h2>项目列表</h2>
-        </div>
-        <div className="project-list">
-          {data.customProjects.map((project) => (
-            <button
-              key={project.id}
-              type="button"
-              aria-pressed={selectedProject?.id === project.id}
-              onClick={() => onSelect(project.id)}
-            >
-              {project.name}
-              <span>{project.items.filter((item) => !item.completed).length} 未完成</span>
-            </button>
-          ))}
-          {!data.customProjects.length ? <p className="empty-text">左侧快速新增一个项目。</p> : null}
-        </div>
-      </div>
+    <section className="project-page">
       <div className="panel">
         {selectedProject ? (
           <>
@@ -909,7 +881,7 @@ function ProjectPage({
             />
           </>
         ) : (
-          <p className="empty-text">先创建一个自定义项目。</p>
+          <p className="empty-text">先在左侧快速新增一个项目。</p>
         )}
       </div>
     </section>

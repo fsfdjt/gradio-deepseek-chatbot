@@ -291,7 +291,8 @@ textarea {
 
 .page-grid,
 .page-stack,
-.custom-grid {
+.custom-grid,
+.project-page {
   padding: 20px;
 }
 
@@ -304,6 +305,11 @@ textarea {
 .custom-grid {
   display: grid;
   grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
+  gap: 14px;
+}
+
+.project-page {
+  display: grid;
   gap: 14px;
 }
 
@@ -547,7 +553,8 @@ button:disabled {
   .topbar,
   .page-grid,
   .page-stack,
-  .custom-grid {
+  .custom-grid,
+  .project-page {
     padding: 12px;
   }
 
