@@ -42,6 +42,17 @@ test("home page renders an automatically sorted timeline section", () => {
   assert.match(source, /timeline-list/);
 });
 
+test("home page renders remaining time percentages", () => {
+  const source = readFileSync("src/App.tsx", "utf8");
+
+  assert.match(source, /getTimeRemainingPercentages/);
+  assert.match(source, /剩余时间/);
+  assert.match(source, /TimeRemainingRow label="今日"/);
+  assert.match(source, /TimeRemainingRow label="本周"/);
+  assert.match(source, /TimeRemainingRow label="本月"/);
+  assert.match(source, /TimeRemainingRow label="本年"/);
+});
+
 test("responsive layout rules exist for mobile screens", () => {
   const css = readFileSync("src/styles.css", "utf8");
   assert.match(css, /@media \(max-width: 840px\)/);

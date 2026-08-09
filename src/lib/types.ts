@@ -112,3 +112,10 @@ export type TimelineItem = {
   timeLabel: string;
   sortAt: string;
 };
+
+export type TimeRemainingPercentages = {
+  day: number;
+  week: number;
+  month: number;
+  year: number;
+};

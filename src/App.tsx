@@ -33,6 +33,7 @@ import {
   filterTasks,
   getDashboardSummary,
   getHomeTimeline,
+  getTimeRemainingPercentages,
   priorityLabel,
   setTaskDone,
   statusLabel,
@@ -106,6 +107,7 @@ export default function App() {
 
   const summary = useMemo(() => getDashboardSummary(data, today), [data]);
   const timeline = useMemo(() => getHomeTimeline(data, today), [data]);
+  const timeRemaining = useMemo(() => getTimeRemainingPercentages(new Date()), []);
   const selectedProject =
     data.customProjects.find((project) => project.id === selectedProjectId) ??
     data.customProjects[0];
@@ -212,6 +214,7 @@ export default function App() {
             data={data}
             summary={summary}
             timeline={timeline}
+            timeRemaining={timeRemaining}
             onTaskDone={(id, done) => mutate((value) => setTaskDone(value, id, done))}
             onAddMemo={(content) => mutate((value) => addMemo(value, { content }))}
             onOpenPage={setActivePage}
@@ -323,6 +326,7 @@ function HomePage({
   data,
   summary,
   timeline,
+  timeRemaining,
   onTaskDone,
   onAddMemo,
   onOpenPage,
@@ -330,6 +334,7 @@ function HomePage({
   data: AppData;
   summary: ReturnType<typeof getDashboardSummary>;
   timeline: ReturnType<typeof getHomeTimeline>;
+  timeRemaining: ReturnType<typeof getTimeRemainingPercentages>;
   onTaskDone: (id: string, done: boolean) => void;
   onAddMemo: (content: string) => void;
   onOpenPage: (page: PageId) => void;
@@ -449,7 +454,30 @@ function HomePage({
           )}
         </div>
       </section>
+      <section className="panel">
+        <div className="panel-heading">
+          <h2>剩余时间</h2>
+        </div>
+        <div className="time-remaining-list">
+          <TimeRemainingRow label="今日" value={timeRemaining.day} />
+          <TimeRemainingRow label="本周" value={timeRemaining.week} />
+          <TimeRemainingRow label="本月" value={timeRemaining.month} />
+          <TimeRemainingRow label="本年" value={timeRemaining.year} />
+        </div>
+      </section>
     </section>
+  );
+}
+
+function TimeRemainingRow({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="time-remaining-row">
+      <span>{label}</span>
+      <div className="time-progress" aria-label={`${label}剩余 ${value}%`}>
+        <span style={{ width: `${value}%` }} />
+      </div>
+      <strong>{value}%</strong>
+    </div>
   );
 }
 

@@ -443,6 +443,42 @@ textarea {
   color: #64748b;
 }
 
+.time-remaining-list {
+  display: grid;
+  gap: 12px;
+}
+
+.time-remaining-row {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 56px;
+  align-items: center;
+  gap: 10px;
+}
+
+.time-remaining-row span {
+  color: #475569;
+}
+
+.time-remaining-row strong {
+  text-align: right;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.time-progress {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e2e8f0;
+}
+
+.time-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #16a34a;
+}
+
 .summary-list button,
 .project-list button {
   justify-content: space-between;

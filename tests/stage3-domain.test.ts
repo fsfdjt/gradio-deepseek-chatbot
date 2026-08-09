@@ -13,6 +13,7 @@ import {
   filterTasks,
   getDashboardSummary,
   getHomeTimeline,
+  getTimeRemainingPercentages,
   setTaskDone,
   updateCustomItem,
   updateTask,
@@ -41,6 +42,17 @@ test("today plan supports add, update, complete, filter, and delete", () => {
 
   data = deleteTask(data, "task-1");
   assert.equal(data.tasks.length, 0);
+});
+
+test("time remaining percentages are calculated for day week month and year", () => {
+  const percentages = getTimeRemainingPercentages(new Date(2026, 7, 5, 12, 0, 0));
+
+  assert.deepEqual(percentages, {
+    day: 50,
+    week: 64.3,
+    month: 85.5,
+    year: 40.7,
+  });
 });
 
 test("home timeline combines modules and sorts records by time", () => {

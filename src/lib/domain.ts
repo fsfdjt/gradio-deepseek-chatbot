@@ -9,6 +9,7 @@ import type {
   Priority,
   Task,
   TaskStatus,
+  TimeRemainingPercentages,
   TimelineItem,
   Workout,
 } from "./types";
@@ -494,6 +495,46 @@ export function getHomeTimeline(data: AppData, date = todayString()): TimelineIt
   }
 
   return items.sort((left, right) => left.sortAt.localeCompare(right.sortAt));
+}
+
+function remainingPercent(start: Date, end: Date, now: Date): number {
+  const total = end.getTime() - start.getTime();
+  const remaining = end.getTime() - now.getTime();
+  const bounded = Math.min(100, Math.max(0, (remaining / total) * 100));
+  return Math.round(bounded * 10) / 10;
+}
+
+export function getTimeRemainingPercentages(now = new Date()): TimeRemainingPercentages {
+  const dayStart = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+    0,
+    0,
+    0,
+    0,
+  );
+  const dayEnd = new Date(dayStart);
+  dayEnd.setDate(dayEnd.getDate() + 1);
+
+  const weekStart = new Date(dayStart);
+  const mondayOffset = (dayStart.getDay() + 6) % 7;
+  weekStart.setDate(dayStart.getDate() - mondayOffset);
+  const weekEnd = new Date(weekStart);
+  weekEnd.setDate(weekEnd.getDate() + 7);
+
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+  const yearStart = new Date(now.getFullYear(), 0, 1);
+  const yearEnd = new Date(now.getFullYear() + 1, 0, 1);
+
+  return {
+    day: remainingPercent(dayStart, dayEnd, now),
+    week: remainingPercent(weekStart, weekEnd, now),
+    month: remainingPercent(monthStart, monthEnd, now),
+    year: remainingPercent(yearStart, yearEnd, now),
+  };
 }
 
 export function priorityLabel(priority: Priority): string {
