@@ -6,7 +6,7 @@ import { pages } from "../src/lib/appStructure.ts";
 test("app navigation exposes every PRD module exactly once", () => {
   assert.deepEqual(
     pages.map((page) => page.label),
-    ["首页总览", "今日计划", "健身计划", "饮食计划", "游戏娱乐", "自定义项目", "数据与设置"],
+    ["首页总览", "今日计划", "健身计划", "饮食计划", "游戏娱乐", "数据与设置"],
   );
 });
 
@@ -18,11 +18,20 @@ test("main app wires all page views and module components", () => {
     "FitnessPage",
     "DietPage",
     "FunPage",
-    "CustomPage",
+    "ProjectPage",
     "SettingsPage",
   ]) {
     assert.match(source, new RegExp(`<${component}`));
   }
+});
+
+test("sidebar supports quick project creation and project list navigation", () => {
+  const source = readFileSync("src/App.tsx", "utf8");
+
+  assert.match(source, /className="quick-add-project"/);
+  assert.match(source, /快速新增项目/);
+  assert.match(source, /className="sidebar-projects"/);
+  assert.match(source, /setActivePage\("project"\)/);
 });
 
 test("responsive layout rules exist for mobile screens", () => {

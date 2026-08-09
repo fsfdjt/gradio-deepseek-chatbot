@@ -170,6 +170,20 @@ textarea {
   color: #1d4ed8;
 }
 
+.quick-add-project {
+  width: 100%;
+  border: 1px solid #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+  border-radius: 7px;
+  padding: 10px 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
 .main-nav {
   display: grid;
   gap: 6px;
@@ -192,6 +206,50 @@ textarea {
   background: #ffffff;
   box-shadow: inset 3px 0 0 #2563eb;
   color: #0f172a;
+}
+
+.sidebar-projects {
+  display: grid;
+  gap: 6px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid #d5dce5;
+}
+
+.sidebar-section-title,
+.empty-sidebar-text {
+  margin: 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.sidebar-projects button {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: #334155;
+  text-align: left;
+  border-radius: 7px;
+  padding: 9px 10px;
+}
+
+.sidebar-projects button[aria-pressed="true"] {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.sidebar-projects button span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-projects button small {
+  color: #64748b;
 }
 
 .workspace {

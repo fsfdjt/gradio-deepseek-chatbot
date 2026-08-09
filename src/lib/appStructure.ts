@@ -4,7 +4,7 @@ export type PageId =
   | "fitness"
   | "diet"
   | "fun"
-  | "custom"
+  | "project"
   | "settings";
 
 export type PageDefinition = {
@@ -19,6 +19,5 @@ export const pages: PageDefinition[] = [
   { id: "fitness", label: "健身计划", description: "记录训练内容、时长和完成情况。" },
   { id: "diet", label: "饮食计划", description: "记录餐食、饮水和每日备注。" },
   { id: "fun", label: "游戏娱乐", description: "安排游戏、影视、阅读等休闲计划。" },
-  { id: "custom", label: "自定义项目", description: "创建自己的清单和项目条目。" },
   { id: "settings", label: "数据与设置", description: "管理本地备份、恢复和清空数据。" },
 ];

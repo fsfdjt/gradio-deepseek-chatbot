@@ -61,7 +61,7 @@ const icons: Record<PageId, typeof Home> = {
   fitness: Dumbbell,
   diet: Utensils,
   fun: Gamepad2,
-  custom: FolderPlus,
+  project: FolderPlus,
   settings: Settings,
 };
 
@@ -103,14 +103,38 @@ export default function App() {
     });
   }, [data, isHydrated]);
 
-  const currentPage = pages.find((page) => page.id === activePage) ?? pages[0];
   const summary = useMemo(() => getDashboardSummary(data, today), [data]);
   const selectedProject =
     data.customProjects.find((project) => project.id === selectedProjectId) ??
     data.customProjects[0];
+  const currentPage =
+    activePage === "project"
+      ? {
+          label: selectedProject?.name ?? "项目",
+          description: selectedProject
+            ? "管理这个项目里的清单条目。"
+            : "从左侧快速新增一个项目后开始管理。",
+        }
+      : (pages.find((page) => page.id === activePage) ?? pages[0]);
 
   function mutate(updater: (value: AppData) => AppData) {
     setData((current) => updater(current));
+  }
+
+  function handleQuickAddProject() {
+    const name = prompt("新增项目名称");
+    if (!name?.trim()) {
+      return;
+    }
+
+    let createdProjectId = "";
+    setData((current) => {
+      const next = addCustomProject(current, { name: name.trim() });
+      createdProjectId = next.customProjects[0]?.id ?? "";
+      return next;
+    });
+    setSelectedProjectId(createdProjectId);
+    setActivePage("project");
   }
 
   if (!isHydrated) {
@@ -126,6 +150,10 @@ export default function App() {
           </span>
           <span>Work Life Hub</span>
         </div>
+        <button type="button" className="quick-add-project" onClick={handleQuickAddProject}>
+          <Plus size={18} />
+          快速新增项目
+        </button>
         <nav className="main-nav" aria-label="主导航">
           {pages.map((page) => {
             const Icon = icons[page.id];
@@ -142,6 +170,28 @@ export default function App() {
             );
           })}
         </nav>
+        <div className="sidebar-projects" aria-label="项目列表">
+          <p className="sidebar-section-title">项目</p>
+          {data.customProjects.length ? (
+            data.customProjects.map((project) => (
+              <button
+                key={project.id}
+                type="button"
+                aria-pressed={activePage === "project" && selectedProject?.id === project.id}
+                onClick={() => {
+                  setSelectedProjectId(project.id);
+                  setActivePage("project");
+                }}
+              >
+                <FolderPlus size={16} />
+                <span>{project.name}</span>
+                <small>{project.items.filter((item) => !item.completed).length}</small>
+              </button>
+            ))
+          ) : (
+            <p className="empty-sidebar-text">暂无项目</p>
+          )}
+        </div>
       </aside>
 
       <main className="workspace">
@@ -201,8 +251,8 @@ export default function App() {
             onDelete={(id) => mutate((value) => deleteEntertainment(value, id))}
           />
         ) : null}
-        {activePage === "custom" ? (
-          <CustomPage
+        {activePage === "project" ? (
+          <ProjectPage
             data={data}
             selectedProject={selectedProject}
             onSelect={setSelectedProjectId}
@@ -369,7 +419,7 @@ function HomePage({
           <button type="button" onClick={() => onOpenPage("fun")}>
             游戏娱乐 <span>{summary.activeEntertainment.length} 个进行中</span>
           </button>
-          <button type="button" onClick={() => onOpenPage("custom")}>
+          <button type="button" onClick={() => onOpenPage("project")}>
             自定义项目 <span>{summary.recentCustomProjects.length} 个最近更新</span>
           </button>
         </div>
@@ -665,7 +715,7 @@ function FunPage({
   );
 }
 
-function CustomPage({
+function ProjectPage({
   data,
   selectedProject,
   onSelect,
@@ -696,24 +746,9 @@ function CustomPage({
   return (
     <section className="custom-grid">
       <div className="panel">
-        <form
-          className="inline-form"
-          onSubmit={(event) => {
-            event.preventDefault();
-            onAddProject({ name: projectName });
-            setProjectName("");
-          }}
-        >
-          <input
-            value={projectName}
-            onChange={(event) => setProjectName(event.target.value)}
-            placeholder="新项目名称"
-            required
-          />
-          <button type="submit" aria-label="新增项目">
-            <Plus size={18} />
-          </button>
-        </form>
+        <div className="panel-heading">
+          <h2>项目列表</h2>
+        </div>
         <div className="project-list">
           {data.customProjects.map((project) => (
             <button
@@ -726,6 +761,7 @@ function CustomPage({
               <span>{project.items.filter((item) => !item.completed).length} 未完成</span>
             </button>
           ))}
+          {!data.customProjects.length ? <p className="empty-text">左侧快速新增一个项目。</p> : null}
         </div>
       </div>
       <div className="panel">
