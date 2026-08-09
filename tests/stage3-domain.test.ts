@@ -30,6 +30,9 @@ test("today plan supports add, update, complete, filter, and delete", () => {
       title: "整理 PRD",
       priority: "high",
       plannedDate: "2026-08-09",
+      startTime: "10:30",
+      estimatedMinutes: 90,
+      note: "准备开发依据",
     },
     clock,
   );
@@ -37,6 +40,8 @@ test("today plan supports add, update, complete, filter, and delete", () => {
   data = setTaskDone(data, "task-1", true, clock);
 
   assert.equal(data.tasks[0].note, "作为开发依据");
+  assert.equal(data.tasks[0].startTime, "10:30");
+  assert.equal(data.tasks[0].estimatedMinutes, 90);
   assert.equal(data.tasks[0].status, "done");
   assert.equal(filterTasks(data.tasks, "done").length, 1);
 
@@ -93,6 +98,39 @@ test("home timeline combines modules and sorts records by time", () => {
   assert.deepEqual(
     timeline.map((item) => item.title),
     ["早餐", "上午备忘", "午餐"],
+  );
+});
+
+test("home timeline sorts today plan tasks by their start time", () => {
+  let data = createEmptyData();
+  data = addTask(
+    data,
+    {
+      id: "task-late",
+      title: "晚间任务",
+      plannedDate: "2026-08-09",
+      startTime: "20:00",
+      estimatedMinutes: 60,
+    },
+    clock,
+  );
+  data = addTask(
+    data,
+    {
+      id: "task-early",
+      title: "晨间任务",
+      plannedDate: "2026-08-09",
+      startTime: "07:30",
+      estimatedMinutes: 30,
+    },
+    clock,
+  );
+
+  const timeline = getHomeTimeline(data, "2026-08-09");
+
+  assert.deepEqual(
+    timeline.map((item) => item.title),
+    ["晨间任务", "晚间任务"],
   );
 });
 

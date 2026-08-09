@@ -53,6 +53,17 @@ test("home page renders remaining time percentages", () => {
   assert.match(source, /TimeRemainingRow label="本年"/);
 });
 
+test("today plan form captures start time estimated minutes and notes", () => {
+  const source = readFileSync("src/App.tsx", "utf8");
+
+  assert.match(source, /const \[startTime, setStartTime\]/);
+  assert.match(source, /const \[estimatedMinutes, setEstimatedMinutes\]/);
+  assert.match(source, /const \[note, setNote\]/);
+  assert.match(source, /aria-label="开始时间"/);
+  assert.match(source, /aria-label="预计分钟数"/);
+  assert.match(source, /placeholder="备注说明"/);
+});
+
 test("responsive layout rules exist for mobile screens", () => {
   const css = readFileSync("src/styles.css", "utf8");
   assert.match(css, /@media \(max-width: 840px\)/);

@@ -51,6 +51,8 @@ export function addTask(
     priority: input.priority ?? "medium",
     status: input.status ?? "todo",
     plannedDate: input.plannedDate ?? todayString(),
+    startTime: input.startTime ?? "09:00",
+    estimatedMinutes: Math.max(0, Number(input.estimatedMinutes ?? 30)),
     createdAt: input.createdAt ?? timestamp,
     updatedAt: input.updatedAt ?? timestamp,
   };
@@ -440,8 +442,8 @@ export function getHomeTimeline(data: AppData, date = todayString()): TimelineIt
         id: task.id,
         module: "today",
         title: task.title,
-        timeLabel: "今日计划",
-        sortAt: `${task.plannedDate}T00:00:00.000Z`,
+        timeLabel: task.startTime ?? "00:00",
+        sortAt: `${task.plannedDate}T${task.startTime ?? "00:00"}:00.000Z`,
       });
     }
   }

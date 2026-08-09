@@ -501,6 +501,9 @@ function TodayPage({
   const [title, setTitle] = useState("");
   const [priority, setPriority] = useState<Priority>("medium");
   const [plannedDate, setPlannedDate] = useState(today);
+  const [startTime, setStartTime] = useState("09:00");
+  const [estimatedMinutes, setEstimatedMinutes] = useState(30);
+  const [note, setNote] = useState("");
   const tasks = filterTasks(data.tasks, filter);
 
   return (
@@ -509,8 +512,9 @@ function TodayPage({
         className="panel form-panel"
         onSubmit={(event) => {
           event.preventDefault();
-          onAdd({ title, priority, plannedDate });
+          onAdd({ title, priority, plannedDate, startTime, estimatedMinutes, note });
           setTitle("");
+          setNote("");
         }}
       >
         <input
@@ -518,6 +522,21 @@ function TodayPage({
           onChange={(event) => setTitle(event.target.value)}
           placeholder="任务标题"
           required
+        />
+        <input
+          type="time"
+          value={startTime}
+          onChange={(event) => setStartTime(event.target.value)}
+          required
+          aria-label="开始时间"
+        />
+        <input
+          type="number"
+          min={1}
+          value={estimatedMinutes}
+          onChange={(event) => setEstimatedMinutes(Number(event.target.value))}
+          required
+          aria-label="预计分钟数"
         />
         <select value={priority} onChange={(event) => setPriority(event.target.value as Priority)}>
           {priorityOptions.map((option) => (
@@ -530,6 +549,11 @@ function TodayPage({
           type="date"
           value={plannedDate}
           onChange={(event) => setPlannedDate(event.target.value)}
+        />
+        <input
+          value={note}
+          onChange={(event) => setNote(event.target.value)}
+          placeholder="备注说明"
         />
         <button type="submit">
           <Plus size={18} />
@@ -553,7 +577,7 @@ function TodayPage({
         items={tasks.map((task) => ({
           id: task.id,
           title: task.title,
-          meta: `${statusLabel(task.status)} · ${priorityLabel(task.priority)} · ${task.plannedDate}`,
+          meta: `${task.startTime ?? "未设时间"} · ${task.estimatedMinutes ?? 0} 分钟 · ${statusLabel(task.status)} · ${priorityLabel(task.priority)} · ${task.note || "无备注"}`,
           done: task.status === "done",
           onToggle: (done) => onDone(task.id, done),
           onEdit: () => {

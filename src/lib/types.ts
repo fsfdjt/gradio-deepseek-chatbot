@@ -12,6 +12,8 @@ export type Task = {
   priority: Priority;
   status: TaskStatus;
   plannedDate: string;
+  startTime: string;
+  estimatedMinutes: number;
   createdAt: string;
   updatedAt: string;
 };
