@@ -32,6 +32,7 @@ import {
   deleteWorkout,
   filterTasks,
   getDashboardSummary,
+  getHomeTimeline,
   priorityLabel,
   setTaskDone,
   statusLabel,
@@ -104,6 +105,7 @@ export default function App() {
   }, [data, isHydrated]);
 
   const summary = useMemo(() => getDashboardSummary(data, today), [data]);
+  const timeline = useMemo(() => getHomeTimeline(data, today), [data]);
   const selectedProject =
     data.customProjects.find((project) => project.id === selectedProjectId) ??
     data.customProjects[0];
@@ -209,6 +211,7 @@ export default function App() {
           <HomePage
             data={data}
             summary={summary}
+            timeline={timeline}
             onTaskDone={(id, done) => mutate((value) => setTaskDone(value, id, done))}
             onAddMemo={(content) => mutate((value) => addMemo(value, { content }))}
             onOpenPage={setActivePage}
@@ -319,12 +322,14 @@ export default function App() {
 function HomePage({
   data,
   summary,
+  timeline,
   onTaskDone,
   onAddMemo,
   onOpenPage,
 }: {
   data: AppData;
   summary: ReturnType<typeof getDashboardSummary>;
+  timeline: ReturnType<typeof getHomeTimeline>;
   onTaskDone: (id: string, done: boolean) => void;
   onAddMemo: (content: string) => void;
   onOpenPage: (page: PageId) => void;
@@ -422,6 +427,26 @@ function HomePage({
           <button type="button" onClick={() => onOpenPage("project")}>
             自定义项目 <span>{summary.recentCustomProjects.length} 个最近更新</span>
           </button>
+        </div>
+      </section>
+      <section className="panel wide-panel">
+        <div className="panel-heading">
+          <h2>今日时间线</h2>
+        </div>
+        <div className="timeline-list">
+          {timeline.length ? (
+            timeline.map((item) => (
+              <article className="timeline-item" key={`${item.module}-${item.id}`}>
+                <time>{item.timeLabel}</time>
+                <div>
+                  <strong>{item.title}</strong>
+                  <span>{item.module}</span>
+                </div>
+              </article>
+            ))
+          ) : (
+            <p className="empty-text">今天还没有可排序的记录。</p>
+          )}
         </div>
       </section>
     </section>

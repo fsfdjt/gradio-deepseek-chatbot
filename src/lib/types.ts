@@ -104,3 +104,11 @@ export type DashboardSummary = {
     openItemCount: number;
   }>;
 };
+
+export type TimelineItem = {
+  id: string;
+  module: "today" | "fitness" | "diet" | "fun" | "memo";
+  title: string;
+  timeLabel: string;
+  sortAt: string;
+};

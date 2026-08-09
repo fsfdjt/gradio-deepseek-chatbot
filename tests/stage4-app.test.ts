@@ -34,6 +34,14 @@ test("sidebar supports quick project creation and project list navigation", () =
   assert.match(source, /setActivePage\("project"\)/);
 });
 
+test("home page renders an automatically sorted timeline section", () => {
+  const source = readFileSync("src/App.tsx", "utf8");
+
+  assert.match(source, /getHomeTimeline/);
+  assert.match(source, /今日时间线/);
+  assert.match(source, /timeline-list/);
+});
+
 test("responsive layout rules exist for mobile screens", () => {
   const css = readFileSync("src/styles.css", "utf8");
   assert.match(css, /@media \(max-width: 840px\)/);

@@ -9,6 +9,7 @@ import type {
   Priority,
   Task,
   TaskStatus,
+  TimelineItem,
   Workout,
 } from "./types";
 
@@ -427,6 +428,72 @@ export function getDashboardSummary(
         openItemCount: project.items.filter((item) => !item.completed).length,
       })),
   };
+}
+
+export function getHomeTimeline(data: AppData, date = todayString()): TimelineItem[] {
+  const items: TimelineItem[] = [];
+
+  for (const task of data.tasks) {
+    if (task.plannedDate === date) {
+      items.push({
+        id: task.id,
+        module: "today",
+        title: task.title,
+        timeLabel: "今日计划",
+        sortAt: `${task.plannedDate}T00:00:00.000Z`,
+      });
+    }
+  }
+
+  for (const meal of data.meals) {
+    if (meal.date === date) {
+      items.push({
+        id: meal.id,
+        module: "diet",
+        title: meal.content,
+        timeLabel: meal.time,
+        sortAt: `${meal.date}T${meal.time}:00.000Z`,
+      });
+    }
+  }
+
+  for (const workout of data.workouts) {
+    if (workout.date === date) {
+      items.push({
+        id: workout.id,
+        module: "fitness",
+        title: workout.name,
+        timeLabel: "训练",
+        sortAt: `${workout.date}T18:00:00.000Z`,
+      });
+    }
+  }
+
+  for (const item of data.entertainments) {
+    if (item.plannedTime.startsWith(date)) {
+      items.push({
+        id: item.id,
+        module: "fun",
+        title: item.name,
+        timeLabel: item.plannedTime.slice(11, 16) || "娱乐",
+        sortAt: item.plannedTime,
+      });
+    }
+  }
+
+  for (const memo of data.memos) {
+    if (memo.createdAt.startsWith(date)) {
+      items.push({
+        id: memo.id,
+        module: "memo",
+        title: memo.content,
+        timeLabel: memo.createdAt.slice(11, 16),
+        sortAt: memo.createdAt,
+      });
+    }
+  }
+
+  return items.sort((left, right) => left.sortAt.localeCompare(right.sortAt));
 }
 
 export function priorityLabel(priority: Priority): string {

@@ -12,6 +12,7 @@ import {
   deleteTask,
   filterTasks,
   getDashboardSummary,
+  getHomeTimeline,
   setTaskDone,
   updateCustomItem,
   updateTask,
@@ -40,6 +41,47 @@ test("today plan supports add, update, complete, filter, and delete", () => {
 
   data = deleteTask(data, "task-1");
   assert.equal(data.tasks.length, 0);
+});
+
+test("home timeline combines modules and sorts records by time", () => {
+  let data = createEmptyData();
+  data = addMeal(
+    data,
+    {
+      id: "meal-lunch",
+      content: "午餐",
+      date: "2026-08-09",
+      time: "12:30",
+    },
+    clock,
+  );
+  data = addMemo(
+    data,
+    {
+      id: "memo-1",
+      content: "上午备忘",
+      createdAt: "2026-08-09T09:30:00.000Z",
+      updatedAt: "2026-08-09T09:30:00.000Z",
+    },
+    clock,
+  );
+  data = addMeal(
+    data,
+    {
+      id: "meal-breakfast",
+      content: "早餐",
+      date: "2026-08-09",
+      time: "08:00",
+    },
+    clock,
+  );
+
+  const timeline = getHomeTimeline(data, "2026-08-09");
+
+  assert.deepEqual(
+    timeline.map((item) => item.title),
+    ["早餐", "上午备忘", "午餐"],
+  );
 });
 
 test("module records are added with the minimum required fields", () => {

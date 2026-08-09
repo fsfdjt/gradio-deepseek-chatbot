@@ -406,9 +406,41 @@ textarea {
 }
 
 .summary-list,
-.project-list {
+.project-list,
+.timeline-list {
   display: grid;
   gap: 8px;
+}
+
+.timeline-item {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  border-top: 1px solid #edf1f5;
+  padding: 10px 0;
+}
+
+.timeline-item:first-child {
+  border-top: 0;
+}
+
+.timeline-item time {
+  color: #2563eb;
+  font-variant-numeric: tabular-nums;
+}
+
+.timeline-item div {
+  display: grid;
+  gap: 3px;
+}
+
+.timeline-item strong {
+  font-weight: 500;
+}
+
+.timeline-item span {
+  color: #64748b;
 }
 
 .summary-list button,
