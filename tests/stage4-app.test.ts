@@ -29,9 +29,13 @@ test("sidebar supports quick project creation and project list navigation", () =
   const source = readFileSync("src/App.tsx", "utf8");
 
   assert.match(source, /className="quick-add-project"/);
+  assert.match(source, /aria-label="快速新增项目"/);
+  assert.match(source, /placeholder="快速新增项目"/);
   assert.match(source, /快速新增项目/);
   assert.match(source, /className="sidebar-projects"/);
+  assert.match(source, /createId\("project"\)/);
   assert.match(source, /setActivePage\("project"\)/);
+  assert.equal(source.includes('prompt("新增项目名称"'), false);
 });
 
 test("home page renders an automatically sorted timeline section", () => {

@@ -172,16 +172,24 @@ textarea {
 
 .quick-add-project {
   width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 42px;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.quick-add-project input {
+  min-width: 0;
+  background: #ffffff;
+}
+
+.quick-add-project button {
   border: 1px solid #2563eb;
   background: #2563eb;
   color: #ffffff;
   border-radius: 7px;
-  padding: 10px 11px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 14px;
+  display: grid;
+  place-items: center;
 }
 
 .main-nav {

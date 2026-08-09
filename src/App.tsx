@@ -23,6 +23,7 @@ import {
   addTask,
   addWorkout,
   createEmptyData,
+  createId,
   deleteCustomItem,
   deleteCustomProject,
   deleteEntertainment,
@@ -82,6 +83,7 @@ export default function App() {
   const [message, setMessage] = useState("");
   const [taskFilter, setTaskFilter] = useState<"all" | TaskStatus>("all");
   const [selectedProjectId, setSelectedProjectId] = useState("");
+  const [quickProjectName, setQuickProjectName] = useState("");
 
   useEffect(() => {
     loadAppData()
@@ -125,20 +127,17 @@ export default function App() {
     setData((current) => updater(current));
   }
 
-  function handleQuickAddProject() {
-    const name = prompt("新增项目名称");
-    if (!name?.trim()) {
+  function handleQuickAddProject(name: string) {
+    const trimmedName = name.trim();
+    if (!trimmedName) {
       return;
     }
 
-    let createdProjectId = "";
-    setData((current) => {
-      const next = addCustomProject(current, { name: name.trim() });
-      createdProjectId = next.customProjects[0]?.id ?? "";
-      return next;
-    });
-    setSelectedProjectId(createdProjectId);
+    const projectId = createId("project");
+    mutate((current) => addCustomProject(current, { id: projectId, name: trimmedName }));
+    setSelectedProjectId(projectId);
     setActivePage("project");
+    setQuickProjectName("");
   }
 
   if (!isHydrated) {
@@ -154,10 +153,24 @@ export default function App() {
           </span>
           <span>Work Life Hub</span>
         </div>
-        <button type="button" className="quick-add-project" onClick={handleQuickAddProject}>
-          <Plus size={18} />
-          快速新增项目
-        </button>
+        <form
+          className="quick-add-project"
+          aria-label="快速新增项目"
+          onSubmit={(event) => {
+            event.preventDefault();
+            handleQuickAddProject(quickProjectName);
+          }}
+        >
+          <input
+            value={quickProjectName}
+            onChange={(event) => setQuickProjectName(event.target.value)}
+            placeholder="快速新增项目"
+            aria-label="项目名称"
+          />
+          <button type="submit" aria-label="新增项目">
+            <Plus size={18} />
+          </button>
+        </form>
         <nav className="main-nav" aria-label="主导航">
           {pages.map((page) => {
             const Icon = icons[page.id];
@@ -817,7 +830,6 @@ function ProjectPage({
   ) => void;
   onDeleteItem: (projectId: string, itemId: string) => void;
 }) {
-  const [projectName, setProjectName] = useState("");
   const [itemTitle, setItemTitle] = useState("");
 
   return (
