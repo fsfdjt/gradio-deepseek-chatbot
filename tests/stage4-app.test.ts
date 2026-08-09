@@ -1,0 +1,33 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import test from "node:test";
+import { pages } from "../src/lib/appStructure.ts";
+
+test("app navigation exposes every PRD module exactly once", () => {
+  assert.deepEqual(
+    pages.map((page) => page.label),
+    ["首页总览", "今日计划", "健身计划", "饮食计划", "游戏娱乐", "自定义项目", "数据与设置"],
+  );
+});
+
+test("main app wires all page views and module components", () => {
+  const source = readFileSync("src/App.tsx", "utf8");
+  for (const component of [
+    "HomePage",
+    "TodayPage",
+    "FitnessPage",
+    "DietPage",
+    "FunPage",
+    "CustomPage",
+    "SettingsPage",
+  ]) {
+    assert.match(source, new RegExp(`<${component}`));
+  }
+});
+
+test("responsive layout rules exist for mobile screens", () => {
+  const css = readFileSync("src/styles.css", "utf8");
+  assert.match(css, /@media \(max-width: 840px\)/);
+  assert.match(css, /@media \(max-width: 480px\)/);
+  assert.match(css, /grid-template-columns: 1fr/);
+});
