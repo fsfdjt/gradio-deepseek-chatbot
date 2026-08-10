@@ -117,6 +117,9 @@ test("workspace uses a project-local background image with a readable overlay", 
 
   assert.match(css, /url\("\/background\/workspace\.jpg"\)/);
   assert.match(css, /workspace::before/);
+  assert.match(css, /workspace::after/);
+  assert.match(css, /background: rgba\(255, 255, 255, 0\.16\)/);
+  assert.match(css, /-webkit-backdrop-filter: blur\(20px\) saturate\(180%\)/);
   assert.match(css, /pointer-events: none/);
 });
 

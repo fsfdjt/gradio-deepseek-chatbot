@@ -278,7 +278,9 @@ textarea {
 
 .workspace {
   min-width: 0;
-  background: var(--background);
+  background:
+    radial-gradient(circle at top left, rgb(255 255 255 / 72%), transparent 34%),
+    linear-gradient(135deg, rgb(248 250 252 / 92%), rgb(226 232 240 / 86%));
   position: relative;
   isolation: isolate;
 }
@@ -287,12 +289,23 @@ textarea {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background: url("/background/workspace.jpg") center / cover no-repeat;
+  opacity: 0.48;
+  transform: scale(1.04);
+  filter: saturate(1.08) contrast(0.95);
+}
+
+.workspace::after {
+  content: "";
+  position: absolute;
+  inset: 0;
   z-index: -1;
   pointer-events: none;
-  background:
-    linear-gradient(120deg, rgb(248 250 252 / 96%), rgb(248 250 252 / 82%)),
-    url("/background/workspace.jpg") center / cover no-repeat;
-  opacity: 0.9;
+  background: rgba(255, 255, 255, 0.16);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
 }
 
 .workspace > * {
@@ -713,6 +726,21 @@ button:disabled {
 }
 
 @media (prefers-color-scheme: dark) {
+  .workspace {
+    background:
+      radial-gradient(circle at top left, rgb(51 65 85 / 52%), transparent 34%),
+      linear-gradient(135deg, rgb(15 23 42 / 96%), rgb(30 41 59 / 88%));
+  }
+
+  .workspace::before {
+    opacity: 0.34;
+    filter: saturate(0.95) brightness(0.72) contrast(0.92);
+  }
+
+  .workspace::after {
+    background: rgba(0, 0, 0, 0.22);
+  }
+
   .glass-surface,
   .panel,
   .stat-card {
