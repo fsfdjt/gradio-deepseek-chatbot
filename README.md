@@ -2,6 +2,10 @@
 
 人生小票机是一个轻量、有趣的静态网页应用。用户输入今天发生的一件小事，网站会把它生成成一张便利店小票风格的“人生结账单”，适合娱乐、分享和快速演示。
 
+## 在线访问
+
+打开网站：[https://fsfdjt.github.io/gradio-deepseek-chatbot/](https://fsfdjt.github.io/gradio-deepseek-chatbot/)
+
 ## 功能
 
 - 输入今日事件，一键生成人生小票
