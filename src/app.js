@@ -120,9 +120,11 @@ export function createReceiptController(elements, options = {}) {
 
   promptButtons.forEach((button) => {
     button.addEventListener("click", () => {
-      if (input) input.value = button.dataset.prompt ?? "";
-      setMessage("这是一条灵感示例，改成你的故事也可以。");
+      const prompt = button.dataset.prompt ?? "";
+      if (input) input.value = prompt;
+      setMessage("灵感示例已填入，正在打印。");
       input?.focus();
+      void print(prompt);
     });
   });
 

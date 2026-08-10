@@ -106,10 +106,30 @@ test("prompt buttons are examples that fill the input", async () => {
   createReceiptController(elements, { delayMs: 0, setTimeoutFn: immediateTimer });
 
   await elements.prompts[1].trigger("click");
+  await new Promise((resolve) => setImmediate(resolve));
 
   assert.equal(elements.input.value, "今天遇到一个很小但很亮的开心瞬间");
-  assert.match(elements.message.textContent, /灵感示例/);
+  assert.match(elements.receiptContent.textContent, /本次输入：今天遇到一个很小但很亮的开心瞬间/);
+  assert.equal(elements.actions.hidden, false);
   assert.equal(elements.input.focused, true);
+});
+
+test("all three prompt examples fill the input and print immediately", async () => {
+  for (const [index, expected] of [
+    [0, "今天有点累，但还是撑过去了"],
+    [1, "今天遇到一个很小但很亮的开心瞬间"],
+    [2, "今天有点倒霉，但回头想想又很好笑"]
+  ]) {
+    const elements = createElements();
+    createReceiptController(elements, { delayMs: 0, setTimeoutFn: immediateTimer });
+
+    await elements.prompts[index].trigger("click");
+    await new Promise((resolve) => setImmediate(resolve));
+
+    assert.equal(elements.input.value, expected);
+    assert.match(elements.receiptContent.textContent, new RegExp(`本次输入：${expected}`));
+    assert.equal(elements.actions.hidden, false);
+  }
 });
 
 test("regenerate preserves input and switch style changes the style", async () => {
