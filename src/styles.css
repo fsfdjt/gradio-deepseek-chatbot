@@ -279,6 +279,25 @@ textarea {
 .workspace {
   min-width: 0;
   background: var(--background);
+  position: relative;
+  isolation: isolate;
+}
+
+.workspace::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(120deg, rgb(248 250 252 / 96%), rgb(248 250 252 / 82%)),
+    url("/background/workspace.jpg") center / cover no-repeat;
+  opacity: 0.9;
+}
+
+.workspace > * {
+  position: relative;
+  z-index: 1;
 }
 
 .topbar {
@@ -288,7 +307,7 @@ textarea {
   justify-content: space-between;
   gap: 16px;
   align-items: center;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgb(255 255 255 / 84%);
   border-bottom: 1px solid var(--border);
   backdrop-filter: blur(10px);
 }

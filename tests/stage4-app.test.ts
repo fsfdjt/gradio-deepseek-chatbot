@@ -111,3 +111,11 @@ test("theme styles expose shadcn-inspired tokens and page layout classes", () =>
   assert.match(css, /workspace-project-detail/);
   assert.match(source, /getLayoutPreset\(activePage\)/);
 });
+
+test("workspace uses a project-local background image with a readable overlay", () => {
+  const css = readFileSync("src/styles.css", "utf8");
+
+  assert.match(css, /url\("\/background\/workspace\.jpg"\)/);
+  assert.match(css, /workspace::before/);
+  assert.match(css, /pointer-events: none/);
+});
