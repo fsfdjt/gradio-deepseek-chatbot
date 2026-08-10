@@ -19,3 +19,19 @@ test("GitHub Pages skips Jekyll processing for static assets", () => {
 
   assert.ok(marker.isFile());
 });
+
+test("docs folder contains a GitHub Pages compatible static build", () => {
+  const docsIndex = read("docs/index.html");
+  const docsMarker = statSync(new URL("../docs/.nojekyll", import.meta.url));
+  const docsStyles = statSync(new URL("../docs/src/styles.css", import.meta.url));
+  const docsApp = statSync(new URL("../docs/src/app.js", import.meta.url));
+  const docsIcon = statSync(new URL("../docs/assets/favicon.svg", import.meta.url));
+
+  assert.ok(docsMarker.isFile());
+  assert.ok(docsStyles.isFile());
+  assert.ok(docsApp.isFile());
+  assert.ok(docsIcon.isFile());
+  assert.match(docsIndex, /href="src\/styles.css"/);
+  assert.match(docsIndex, /src="src\/app.js"/);
+  assert.doesNotMatch(docsIndex, /background-flower\.mp4/);
+});
