@@ -1,38 +1,38 @@
 import assert from "node:assert/strict";
-import { readFileSync, statSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { test } from "node:test";
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
-test("reference video background is included behind the application", () => {
+test("static frosted background replaces the reference video", () => {
   const html = read("index.html");
 
-  assert.match(html, /<div class="background-scene" aria-hidden="true">/);
-  assert.match(
-    html,
-    /<video class="background-video" autoplay muted loop playsinline preload="auto">/
+  assert.match(html, /<div class="background-scene" aria-hidden="true"><\/div>/);
+  assert.doesNotMatch(html, /<video/);
+  assert.doesNotMatch(html, /background-flower\.mp4/);
+});
+
+test("static background uses frosted glass layers without animation", () => {
+  const css = read("src/styles.css");
+
+  assert.match(css, /\.background-scene::before\s*\{[\s\S]*backdrop-filter:\s*blur\(32px\)/);
+  assert.match(css, /\.background-scene::before\s*\{[\s\S]*-webkit-backdrop-filter:\s*blur\(32px\)/);
+  assert.doesNotMatch(css, /\.background-video/);
+  assert.doesNotMatch(
+    css,
+    /\.background-scene\s*\{[^}]*\banimation\s*:/
   );
-  assert.match(html, /<source src="assets\/background-flower\.mp4" type="video\/mp4">/);
+  assert.doesNotMatch(
+    css,
+    /\.background-scene::(?:before|after)\s*\{[^}]*\banimation\s*:/
+  );
 });
 
-test("reference video asset is shipped with the application", () => {
-  const asset = statSync(new URL("../assets/background-flower.mp4", import.meta.url));
-
-  assert.ok(asset.isFile());
-  assert.ok(asset.size > 0);
-});
-
-test("reference video background fills the scene without obstructing content", () => {
+test("main controls use a readable frosted glass surface", () => {
   const css = read("src/styles.css");
 
-  assert.match(css, /\.background-video\s*\{[\s\S]*object-fit:\s*cover/);
-  assert.match(css, /\.background-scene::before\s*\{[\s\S]*z-index:\s*1/);
-});
-
-test("reference video honors reduced motion preferences", () => {
-  const css = read("src/styles.css");
-
-  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.background-video\s*\{[\s\S]*display:\s*none/);
+  assert.match(css, /\.control-panel\s*\{[\s\S]*background:\s*rgba\(25, 30, 27, 0\.36\)/);
+  assert.match(css, /\.control-panel\s*\{[\s\S]*backdrop-filter:\s*blur\(18px\)/);
 });
 
 test("3D background keeps primary application content above the animation", () => {

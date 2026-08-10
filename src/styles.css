@@ -19,9 +19,7 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background:
-    radial-gradient(circle at 20% 0%, rgba(255, 204, 102, 0.12), transparent 28%),
-    linear-gradient(145deg, #171717 0%, #111 54%, #201d18 100%);
+  background: #202320;
   color: #f7efe3;
   font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
 }
@@ -37,23 +35,28 @@ textarea {
   z-index: 0;
   overflow: hidden;
   pointer-events: none;
-  perspective: 1200px;
-  transform-style: preserve-3d;
+  background:
+    linear-gradient(122deg, rgba(117, 144, 123, 0.88) 0 28%, transparent 28% 58%, rgba(213, 171, 139, 0.66) 58% 100%),
+    linear-gradient(32deg, #4d6256 0%, #384942 47%, #745c52 100%);
 }
 
 .background-scene::before {
   content: "";
   position: absolute;
   inset: 0;
-  z-index: 1;
-  background: rgba(12, 12, 11, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(241, 247, 239, 0.1);
+  box-shadow: inset 0 0 80px rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(32px) saturate(115%);
+  -webkit-backdrop-filter: blur(32px) saturate(115%);
 }
 
-.background-video {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
+.background-scene::after {
+  content: "";
+  position: absolute;
+  inset: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 0 42px rgba(255, 255, 255, 0.06);
 }
 
 .app-shell,
@@ -75,6 +78,16 @@ textarea {
 .control-panel,
 .preview-panel {
   min-width: 0;
+}
+
+.control-panel {
+  padding: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  background: rgba(25, 30, 27, 0.36);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px) saturate(110%);
+  -webkit-backdrop-filter: blur(18px) saturate(110%);
 }
 
 .eyebrow {
@@ -399,13 +412,13 @@ button:disabled {
     min-height: auto;
     padding: 18px;
   }
+
+  .control-panel {
+    padding: 22px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .background-video {
-    display: none;
-  }
-
   *,
   *::before,
   *::after {
