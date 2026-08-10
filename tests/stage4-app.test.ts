@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import { pages } from "../src/lib/appStructure.ts";
+import { getLayoutPreset } from "../src/lib/layoutPresets.ts";
 
 test("app navigation exposes every PRD module exactly once", () => {
   assert.deepEqual(
@@ -23,6 +24,19 @@ test("main app wires all page views and module components", () => {
   ]) {
     assert.match(source, new RegExp(`<${component}`));
   }
+});
+
+test("layout presets automatically choose component patterns for each page", () => {
+  assert.equal(getLayoutPreset("home").kind, "dashboard");
+  assert.equal(getLayoutPreset("today").kind, "record-manager");
+  assert.equal(getLayoutPreset("project").kind, "project-detail");
+  assert.equal(getLayoutPreset("settings").kind, "settings");
+  assert.deepEqual(getLayoutPreset("home").components, [
+    "card",
+    "progress",
+    "timeline",
+    "sidebar",
+  ]);
 });
 
 test("sidebar supports quick project creation and project list navigation", () => {
@@ -82,4 +96,18 @@ test("responsive layout rules exist for mobile screens", () => {
   assert.match(css, /@media \(max-width: 840px\)/);
   assert.match(css, /@media \(max-width: 480px\)/);
   assert.match(css, /grid-template-columns: 1fr/);
+});
+
+test("theme styles expose shadcn-inspired tokens and page layout classes", () => {
+  const css = readFileSync("src/styles.css", "utf8");
+  const source = readFileSync("src/App.tsx", "utf8");
+
+  assert.match(css, /--background:/);
+  assert.match(css, /--foreground:/);
+  assert.match(css, /--card:/);
+  assert.match(css, /--primary:/);
+  assert.match(css, /workspace-dashboard/);
+  assert.match(css, /workspace-record-manager/);
+  assert.match(css, /workspace-project-detail/);
+  assert.match(source, /getLayoutPreset\(activePage\)/);
 });

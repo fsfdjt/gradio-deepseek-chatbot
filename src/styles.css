@@ -1,6 +1,21 @@
 :root {
-  color: #172033;
-  background: #f3f5f7;
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --border: #e2e8f0;
+  --input: #cbd5e1;
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --success: #16a34a;
+  --destructive: #b91c1c;
+  --radius: 8px;
+  --shadow-sm: 0 1px 2px rgb(15 23 42 / 5%);
+  --shadow-md: 0 12px 32px rgb(15 23 42 / 8%);
+  color: var(--foreground);
+  background: var(--background);
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
@@ -43,10 +58,10 @@ button {
   display: grid;
   gap: 20px;
   padding: 24px;
-  background: #ffffff;
-  border: 1px solid #d8dee6;
-  border-radius: 8px;
-  box-shadow: 0 20px 60px rgb(15 23 42 / 8%);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
 }
 
 .auth-panel h1,
@@ -69,7 +84,7 @@ button {
 }
 
 .eyebrow {
-  color: #2563eb;
+  color: var(--primary);
   font-weight: 500;
 }
 
@@ -77,11 +92,11 @@ input,
 select,
 textarea {
   width: 100%;
-  border: 1px solid #cbd5e1;
-  border-radius: 7px;
+  border: 1px solid var(--input);
+  border-radius: var(--radius);
   padding: 10px 11px;
-  background: #ffffff;
-  color: #172033;
+  background: var(--card);
+  color: var(--foreground);
 }
 
 .primary-button,
@@ -94,10 +109,10 @@ textarea {
 .import-button,
 .summary-list button,
 .panel-heading button {
-  border: 1px solid #cbd5e1;
-  background: #ffffff;
-  color: #172033;
-  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--foreground);
+  border-radius: var(--radius);
   padding: 9px 12px;
   display: inline-flex;
   align-items: center;
@@ -121,34 +136,35 @@ textarea {
 .form-panel button[type="submit"],
 .inline-form button[type="submit"] {
   background: #2563eb;
-  border-color: #2563eb;
-  color: #ffffff;
+  border-color: var(--primary);
+  color: var(--primary-foreground);
 }
 
 .danger-button {
-  color: #b91c1c !important;
+  color: var(--destructive) !important;
   border-color: #fecaca !important;
 }
 
 .error-text {
-  color: #b91c1c;
+  color: var(--destructive);
   margin: 0;
 }
 
 .muted,
 .empty-text {
-  color: #64748b;
+  color: var(--muted-foreground);
 }
 
 .app-shell {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: 220px minmax(0, 1fr);
+  grid-template-columns: 264px minmax(0, 1fr);
+  background: var(--background);
 }
 
 .sidebar {
-  background: #e9edf2;
-  border-right: 1px solid #d5dce5;
+  background: #ffffff;
+  border-right: 1px solid var(--border);
   padding: 18px 14px;
 }
 
@@ -167,7 +183,7 @@ textarea {
   place-items: center;
   border-radius: 8px;
   background: #dbeafe;
-  color: #1d4ed8;
+  color: var(--primary);
 }
 
 .quick-add-project {
@@ -184,10 +200,10 @@ textarea {
 }
 
 .quick-add-project button {
-  border: 1px solid #2563eb;
-  background: #2563eb;
-  color: #ffffff;
-  border-radius: 7px;
+  border: 1px solid var(--primary);
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-radius: var(--radius);
   display: grid;
   place-items: center;
 }
@@ -206,13 +222,13 @@ textarea {
   background: transparent;
   color: #334155;
   text-align: left;
-  border-radius: 7px;
+  border-radius: var(--radius);
   padding: 10px 11px;
 }
 
 .main-nav button[aria-pressed="true"] {
-  background: #ffffff;
-  box-shadow: inset 3px 0 0 #2563eb;
+  background: var(--muted);
+  box-shadow: inset 3px 0 0 var(--primary);
   color: #0f172a;
 }
 
@@ -221,13 +237,13 @@ textarea {
   gap: 6px;
   margin-top: 18px;
   padding-top: 14px;
-  border-top: 1px solid #d5dce5;
+  border-top: 1px solid var(--border);
 }
 
 .sidebar-section-title,
 .empty-sidebar-text {
   margin: 0;
-  color: #64748b;
+  color: var(--muted-foreground);
   font-size: 13px;
 }
 
@@ -241,12 +257,12 @@ textarea {
   background: transparent;
   color: #334155;
   text-align: left;
-  border-radius: 7px;
+  border-radius: var(--radius);
   padding: 9px 10px;
 }
 
 .sidebar-projects button[aria-pressed="true"] {
-  background: #ffffff;
+  background: var(--muted);
   color: #0f172a;
 }
 
@@ -257,11 +273,12 @@ textarea {
 }
 
 .sidebar-projects button small {
-  color: #64748b;
+  color: var(--muted-foreground);
 }
 
 .workspace {
   min-width: 0;
+  background: var(--background);
 }
 
 .topbar {
@@ -271,8 +288,9 @@ textarea {
   justify-content: space-between;
   gap: 16px;
   align-items: center;
-  background: #ffffff;
-  border-bottom: 1px solid #d8dee6;
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(10px);
 }
 
 .topbar h1,
@@ -286,20 +304,20 @@ textarea {
 }
 
 .topbar p {
-  color: #64748b;
+  color: var(--muted-foreground);
 }
 
 .page-grid,
 .page-stack,
 .custom-grid,
 .project-page {
-  padding: 20px;
+  padding: 24px;
 }
 
 .page-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 16px;
 }
 
 .custom-grid {
@@ -310,26 +328,56 @@ textarea {
 
 .project-page {
   display: grid;
-  gap: 14px;
+  gap: 16px;
 }
 
 .panel,
 .stat-card {
-  background: #ffffff;
-  border: 1px solid #d8dee6;
-  border-radius: 8px;
-  padding: 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 16px;
+}
+
+.page-grid > .panel,
+.page-grid > .stat-card {
+  grid-column: span 4;
+}
+
+.settings-grid > .panel {
+  grid-column: span 6;
+}
+
+.workspace-dashboard .wide-panel {
+  grid-column: span 8;
+}
+
+.workspace-record-manager .page-stack,
+.workspace-project-detail .project-page,
+.workspace-settings .settings-grid {
+  max-width: 1120px;
 }
 
 .stat-card {
   text-align: left;
+  transition:
+    border-color 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.stat-card:hover {
+  border-color: #bfdbfe;
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
 .stat-card span,
 .record-row span,
 .compact-item,
 .panel p {
-  color: #64748b;
+  color: var(--muted-foreground);
 }
 
 .stat-card strong {
@@ -341,10 +389,6 @@ textarea {
 
 .stat-card p {
   margin: 0;
-}
-
-.wide-panel {
-  grid-column: span 2;
 }
 
 .panel-heading {
@@ -372,7 +416,8 @@ textarea {
 }
 
 .form-panel {
-  grid-template-columns: minmax(180px, 1fr) 120px 120px 130px 150px minmax(160px, 1fr) auto;
+  grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+  align-items: end;
 }
 
 .list-row,
@@ -381,7 +426,7 @@ textarea {
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 10px;
-  border-top: 1px solid #edf1f5;
+  border-top: 1px solid var(--border);
   padding: 10px 0;
 }
 
@@ -392,7 +437,7 @@ textarea {
 
 .list-row small {
   color: #475569;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--border);
   border-radius: 999px;
   padding: 3px 8px;
 }
@@ -410,12 +455,12 @@ textarea {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #2563eb;
+  background: var(--primary);
 }
 
 .compact-item {
   margin: 0;
-  border-top: 1px solid #edf1f5;
+  border-top: 1px solid var(--border);
   padding-top: 10px;
 }
 
@@ -431,7 +476,7 @@ textarea {
   grid-template-columns: 92px minmax(0, 1fr);
   gap: 12px;
   align-items: start;
-  border-top: 1px solid #edf1f5;
+  border-top: 1px solid var(--border);
   padding: 10px 0;
 }
 
@@ -440,7 +485,7 @@ textarea {
 }
 
 .timeline-item time {
-  color: #2563eb;
+  color: var(--primary);
   font-variant-numeric: tabular-nums;
 }
 
@@ -454,7 +499,7 @@ textarea {
 }
 
 .timeline-item span {
-  color: #64748b;
+  color: var(--muted-foreground);
 }
 
 .time-remaining-list {
@@ -490,7 +535,7 @@ textarea {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: #16a34a;
+  background: var(--success);
 }
 
 .summary-list button,
@@ -508,9 +553,9 @@ textarea {
 
 .filter-row button[aria-pressed="true"],
 .project-list button[aria-pressed="true"] {
-  background: #2563eb;
-  border-color: #2563eb;
-  color: #ffffff;
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground);
 }
 
 button:disabled {
@@ -543,8 +588,11 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 
+  .page-grid > .panel,
+  .page-grid > .stat-card,
+  .settings-grid > .panel,
   .wide-panel {
-    grid-column: auto;
+    grid-column: 1 / -1;
   }
 }
 

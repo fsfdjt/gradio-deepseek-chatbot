@@ -8,5 +8,6 @@ yarn-error.log*
 pnpm-debug.log*
 vite-dev.log
 vite-dev.err.log
+.references/
 .DS_Store
 Thumbs.db

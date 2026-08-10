@@ -47,6 +47,7 @@ import {
   updateTask,
   updateWorkout,
 } from "./lib/domain";
+import { getLayoutPreset } from "./lib/layoutPresets";
 import { clearAppData, loadAppData, saveAppData } from "./lib/storage";
 import type {
   AppData,
@@ -113,6 +114,7 @@ export default function App() {
   const selectedProject =
     data.customProjects.find((project) => project.id === selectedProjectId) ??
     data.customProjects[0];
+  const layoutPreset = getLayoutPreset(activePage);
   const currentPage =
     activePage === "project"
       ? {
@@ -211,7 +213,7 @@ export default function App() {
         </div>
       </aside>
 
-      <main className="workspace">
+      <main className={`workspace workspace-${layoutPreset.kind}`}>
         <header className="topbar">
           <div>
             <h1>{currentPage.label}</h1>
