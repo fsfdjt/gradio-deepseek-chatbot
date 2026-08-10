@@ -114,6 +114,10 @@ export function createReceiptController(elements, options = {}) {
     void print();
   });
 
+  printButton?.addEventListener("click", () => {
+    void print();
+  });
+
   promptButtons.forEach((button) => {
     button.addEventListener("click", () => {
       if (input) input.value = button.dataset.prompt ?? "";

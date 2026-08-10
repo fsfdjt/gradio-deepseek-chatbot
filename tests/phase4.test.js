@@ -76,6 +76,19 @@ test("printing creates a receipt and reveals actions", async () => {
   assert.equal(controller.getState().lastInput, "今天加班但终于下班了");
 });
 
+test("clicking the print button directly creates a receipt", async () => {
+  const elements = createElements();
+  createReceiptController(elements, { delayMs: 0, setTimeoutFn: immediateTimer });
+
+  elements.input.value = "今天终于准时下班";
+  await elements.printButton.trigger("click");
+  await new Promise((resolve) => setImmediate(resolve));
+
+  assert.equal(elements.actions.hidden, false);
+  assert.match(elements.receiptContent.textContent, /本次输入：今天终于准时下班/);
+  assert.equal(elements.printButton.textContent, "打印小票");
+});
+
 test("short input is rejected with a helpful message", async () => {
   const elements = createElements();
   createReceiptController(elements, { delayMs: 0, setTimeoutFn: immediateTimer });
