@@ -1,41 +1,38 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, statSync } from "node:fs";
 import { test } from "node:test";
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
-test("3D flower background is included behind the application", () => {
+test("reference video background is included behind the application", () => {
   const html = read("index.html");
 
   assert.match(html, /<div class="background-scene" aria-hidden="true">/);
-  assert.match(html, /<div class="flower-scene">/);
-  assert.doesNotMatch(html, /scene-plane/);
-
-  const petalMatches = html.match(/class="flower-petal flower-petal-/g) ?? [];
-
-  assert.equal(petalMatches.length, 10);
-  assert.match(html, /class="flower-center"/);
+  assert.match(
+    html,
+    /<video class="background-video" autoplay muted loop playsinline preload="auto">/
+  );
+  assert.match(html, /<source src="assets\/background-flower\.mp4" type="video\/mp4">/);
 });
 
-test("3D flower background defines perspective and autoplay animations", () => {
-  const css = read("src/styles.css");
+test("reference video asset is shipped with the application", () => {
+  const asset = statSync(new URL("../assets/background-flower.mp4", import.meta.url));
 
-  assert.match(css, /\.background-scene\s*\{[\s\S]*perspective:\s*1200px/);
-  assert.match(css, /\.flower-scene\s*\{[\s\S]*animation:\s*flower-float/);
-  assert.match(css, /\.flower-petal\s*\{[\s\S]*animation:\s*flower-petal-bloom/);
-  assert.match(css, /@keyframes flower-float/);
-  assert.match(css, /@keyframes flower-petal-bloom/);
+  assert.ok(asset.isFile());
+  assert.ok(asset.size > 0);
 });
 
-test("3D flower animation definitions are not duplicated in responsive styles", () => {
+test("reference video background fills the scene without obstructing content", () => {
   const css = read("src/styles.css");
-  const animationNames = ["flower-float", "flower-petal-bloom", "scene-dust-float"];
 
-  animationNames.forEach((animationName) => {
-    const definitions = css.match(new RegExp(`@keyframes ${animationName}`, "g")) ?? [];
+  assert.match(css, /\.background-video\s*\{[\s\S]*object-fit:\s*cover/);
+  assert.match(css, /\.background-scene::before\s*\{[\s\S]*z-index:\s*1/);
+});
 
-    assert.equal(definitions.length, 1);
-  });
+test("reference video honors reduced motion preferences", () => {
+  const css = read("src/styles.css");
+
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.background-video\s*\{[\s\S]*display:\s*none/);
 });
 
 test("3D background keeps primary application content above the animation", () => {

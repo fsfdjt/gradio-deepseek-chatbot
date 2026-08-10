@@ -45,203 +45,21 @@ textarea {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(12, 12, 11, 0.56);
+  z-index: 1;
+  background: rgba(12, 12, 11, 0.3);
+}
+
+.background-video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
 }
 
 .app-shell,
 .site-note {
   position: relative;
   z-index: 1;
-}
-
-.flower-scene {
-  position: absolute;
-  top: 50%;
-  left: 58%;
-  width: clamp(520px, 76vw, 1040px);
-  aspect-ratio: 1;
-  transform-style: preserve-3d;
-  animation: flower-float 18s ease-in-out infinite alternate;
-}
-
-.flower-petal {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 47%;
-  aspect-ratio: 2.15;
-  border: 1px solid rgba(255, 235, 228, 0.48);
-  border-radius: 100% 18% 100% 18%;
-  background: rgba(255, 145, 177, 0.34);
-  box-shadow: 0 0 38px rgba(255, 135, 173, 0.22), inset -20px -12px 28px rgba(115, 48, 97, 0.18);
-  transform-origin: 0 50%;
-  transform-style: preserve-3d;
-  animation: flower-petal-bloom 6.6s ease-in-out var(--delay) infinite alternate;
-}
-
-.flower-petal::after {
-  content: "";
-  position: absolute;
-  inset: 13% 15%;
-  border: 1px solid rgba(255, 245, 239, 0.24);
-  border-radius: inherit;
-}
-
-.flower-petal-one {
-  --angle: -18deg;
-  --tilt: 20deg;
-  --delay: -1.8s;
-  background: rgba(255, 164, 190, 0.4);
-}
-
-.flower-petal-two {
-  --angle: 18deg;
-  --tilt: -24deg;
-  --delay: -3.1s;
-  background: rgba(255, 201, 147, 0.36);
-}
-
-.flower-petal-three {
-  --angle: 54deg;
-  --tilt: 28deg;
-  --delay: -0.7s;
-  background: rgba(255, 140, 179, 0.32);
-}
-
-.flower-petal-four {
-  --angle: 90deg;
-  --tilt: -32deg;
-  --delay: -4.2s;
-  background: rgba(223, 165, 255, 0.31);
-}
-
-.flower-petal-five {
-  --angle: 126deg;
-  --tilt: 23deg;
-  --delay: -2.5s;
-  background: rgba(255, 193, 217, 0.33);
-}
-
-.flower-petal-six {
-  --angle: 162deg;
-  --tilt: -28deg;
-  --delay: -5s;
-  background: rgba(255, 174, 131, 0.3);
-}
-
-.flower-petal-seven {
-  --angle: 198deg;
-  --tilt: 31deg;
-  --delay: -1.2s;
-  background: rgba(255, 134, 176, 0.34);
-}
-
-.flower-petal-eight {
-  --angle: 234deg;
-  --tilt: -20deg;
-  --delay: -3.8s;
-  background: rgba(205, 164, 255, 0.3);
-}
-
-.flower-petal-nine {
-  --angle: 270deg;
-  --tilt: 26deg;
-  --delay: -2s;
-  background: rgba(255, 203, 164, 0.35);
-}
-
-.flower-petal-ten {
-  --angle: 306deg;
-  --tilt: -30deg;
-  --delay: -4.6s;
-  background: rgba(255, 152, 190, 0.32);
-}
-
-.flower-center {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 17%;
-  aspect-ratio: 1;
-  border: 1px solid rgba(255, 236, 153, 0.72);
-  border-radius: 50%;
-  background: rgba(255, 190, 91, 0.8);
-  box-shadow:
-    0 0 50px rgba(255, 193, 90, 0.42),
-    0 0 0 18px rgba(255, 164, 172, 0.12),
-    inset -12px -12px 22px rgba(151, 75, 34, 0.26);
-  transform: translate(-50%, -50%) translateZ(82px);
-}
-
-.flower-center::before,
-.flower-center::after {
-  content: "";
-  position: absolute;
-  inset: 31%;
-  border-radius: 50%;
-  background: rgba(117, 63, 40, 0.48);
-}
-
-.flower-center::after {
-  inset: 42%;
-  background: rgba(255, 237, 180, 0.84);
-}
-
-.scene-dust {
-  position: absolute;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: rgba(255, 204, 102, 0.78);
-  box-shadow: 0 0 28px rgba(255, 204, 102, 0.62);
-}
-
-.scene-dust-one {
-  top: 28%;
-  left: 48%;
-  animation: scene-dust-float 10s ease-in-out infinite alternate;
-}
-
-.scene-dust-two {
-  right: 24%;
-  bottom: 24%;
-  background: rgba(135, 224, 197, 0.7);
-  box-shadow: 0 0 28px rgba(135, 224, 197, 0.5);
-  animation: scene-dust-float 13s ease-in-out -4s infinite alternate;
-}
-
-@keyframes flower-float {
-  from {
-    transform: translate3d(-50%, -50%, -120px) rotateX(57deg) rotateY(-20deg) rotateZ(-12deg) scale(0.9);
-  }
-
-  to {
-    transform: translate3d(-54%, -48%, 110px) rotateX(43deg) rotateY(18deg) rotateZ(9deg) scale(1.04);
-  }
-}
-
-@keyframes flower-petal-bloom {
-  from {
-    transform: rotateZ(var(--angle)) rotateY(var(--tilt)) translateX(3%) scaleX(0.86) scaleY(0.9);
-    opacity: 0.58;
-  }
-
-  to {
-    transform: rotateZ(var(--angle)) rotateY(var(--tilt)) translateX(8%) scaleX(1.06) scaleY(1.04);
-    opacity: 0.94;
-  }
-}
-
-@keyframes scene-dust-float {
-  from {
-    transform: translate3d(-20px, -18px, 0) scale(0.8);
-    opacity: 0.35;
-  }
-
-  to {
-    transform: translate3d(34px, 26px, 80px) scale(1.3);
-    opacity: 0.9;
-  }
 }
 .app-shell {
   width: min(1120px, calc(100% - 32px));
@@ -584,6 +402,10 @@ button:disabled {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .background-video {
+    display: none;
+  }
+
   *,
   *::before,
   *::after {
