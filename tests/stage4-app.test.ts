@@ -141,3 +141,14 @@ test("grey helper text is smaller and UI hints avoid Chinese periods", () => {
   assert.equal(appSource.includes("。"), false);
   assert.equal(structureSource.includes("。"), false);
 });
+
+test("record frames use varied soft accent colors", () => {
+  const css = readFileSync("src/styles.css", "utf8");
+
+  assert.match(css, /--record-accent:/);
+  assert.match(css, /--record-bg:/);
+  assert.match(css, /\.record-row:nth-child\(5n \+ 2\)/);
+  assert.match(css, /\.timeline-item:nth-child\(5n \+ 3\)/);
+  assert.match(css, /\.compact-item:nth-child\(5n \+ 4\)/);
+  assert.match(css, /border-left: 4px solid var\(--record-accent\)/);
+});
