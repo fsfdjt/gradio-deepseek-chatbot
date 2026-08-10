@@ -4,6 +4,10 @@ import {
   renderReceiptText
 } from "./receipt-generator.js";
 import { saveReceiptAsImage } from "./export-image.js";
+import {
+  PLACEHOLDER_PHRASES,
+  mountPlaceholderCycler
+} from "./placeholder-cycle.js";
 
 const MIN_INPUT_LENGTH = 2;
 
@@ -186,6 +190,16 @@ export function mountApp(documentRef = globalThis.document) {
     copyTextButton: documentRef.querySelector("[data-copy-text]"),
     saveImageButton: documentRef.querySelector("[data-save-image]")
   };
+
+  mountPlaceholderCycler({
+    input: elements.input,
+    overlay: documentRef.querySelector("[data-placeholder-overlay]"),
+    phrase: documentRef.querySelector("[data-placeholder-phrase]"),
+    phrases: PLACEHOLDER_PHRASES,
+    documentRef,
+    setIntervalFn: globalThis.setInterval,
+    clearIntervalFn: globalThis.clearInterval
+  });
 
   elements.input?.focus();
   return createReceiptController(elements);

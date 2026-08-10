@@ -96,6 +96,58 @@ textarea:focus {
   box-shadow: 0 0 0 3px rgba(255, 204, 102, 0.16);
 }
 
+.typing-field {
+  position: relative;
+}
+
+.typing-placeholder {
+  position: absolute;
+  inset: 16px 18px auto;
+  pointer-events: none;
+  color: #8f877a;
+  opacity: 0.88;
+  transition: opacity 160ms ease;
+  z-index: 1;
+}
+
+.typing-placeholder[aria-hidden="true"] {
+  opacity: 0;
+}
+
+.typing-placeholder-primary {
+  display: block;
+  color: #b9b0a3;
+  font-weight: 600;
+}
+
+.typing-placeholder-example {
+  display: block;
+  margin-top: 6px;
+  min-height: 1.6em;
+  perspective: 420px;
+}
+
+.typing-placeholder-example > span {
+  display: inline-block;
+  transform-style: preserve-3d;
+}
+
+.typing-placeholder-example > span.is-flipping {
+  animation: placeholder-flip 520ms ease-in-out both;
+}
+
+@keyframes placeholder-flip {
+  from {
+    opacity: 0;
+    transform: rotateX(-82deg) translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: rotateX(0) translateY(0);
+  }
+}
+
 .prompt-chips,
 .receipt-actions {
   display: flex;
