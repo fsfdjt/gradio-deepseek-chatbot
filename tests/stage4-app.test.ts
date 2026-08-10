@@ -119,3 +119,14 @@ test("workspace uses a project-local background image with a readable overlay", 
   assert.match(css, /workspace::before/);
   assert.match(css, /pointer-events: none/);
 });
+
+test("macOS weather glass background is applied with Safari prefix and dark mode", () => {
+  const css = readFileSync("src/styles.css", "utf8");
+  assert.match(css, /-webkit-backdrop-filter: blur\(20px\) saturate\(180%\)/);
+  assert.match(css, /backdrop-filter: blur\(20px\) saturate\(180%\)/);
+  assert.match(css, /background: rgba\(255, 255, 255, 0\.15\)/);
+  assert.match(css, /border: 1px solid rgba\(255, 255, 255, 0\.2\)/);
+  assert.match(css, /border-radius: 16px/);
+  assert.match(css, /prefers-color-scheme: dark/);
+  assert.match(css, /background: rgba\(0, 0, 0, 0\.2\)/);
+});

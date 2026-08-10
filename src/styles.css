@@ -637,3 +637,47 @@ button:disabled {
     grid-column: 2;
   }
 }
+
+/* macOS weather glass: visual only, does not affect behavior */
+.glass-surface,
+.panel,
+.stat-card {
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.15);
+
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 8px 32px rgba(31, 38, 135, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+@media (prefers-color-scheme: dark) {
+  .glass-surface,
+  .panel,
+  .stat-card {
+    background: rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass-surface,
+  .panel,
+  .stat-card {
+    background: rgba(248, 250, 252, 0.94);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .glass-surface,
+    .panel,
+    .stat-card {
+      background: rgba(15, 23, 42, 0.94);
+    }
+  }
+}
