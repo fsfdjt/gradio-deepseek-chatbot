@@ -8,6 +8,7 @@ import {
   PLACEHOLDER_PHRASES,
   mountPlaceholderCycler
 } from "./placeholder-cycle.js";
+import { mountTypingEffect } from "./input-text-effect.js";
 
 const MIN_INPUT_LENGTH = 2;
 
@@ -125,7 +126,10 @@ export function createReceiptController(elements, options = {}) {
   promptButtons.forEach((button) => {
     button.addEventListener("click", () => {
       const prompt = button.dataset.prompt ?? "";
-      if (input) input.value = prompt;
+      if (input) {
+        input.value = prompt;
+        input.dispatchEvent?.(new Event("input", { bubbles: true }));
+      }
       setMessage("灵感示例已填入，正在打印。");
       input?.focus();
       void print(prompt);
@@ -190,8 +194,15 @@ export function mountApp(documentRef = globalThis.document) {
     regenerateButton: documentRef.querySelector("[data-regenerate]"),
     switchStyleButton: documentRef.querySelector("[data-switch-style]"),
     copyTextButton: documentRef.querySelector("[data-copy-text]"),
-    saveImageButton: documentRef.querySelector("[data-save-image]")
+    saveImageButton: documentRef.querySelector("[data-save-image]"),
+    typingEffect: documentRef.querySelector("[data-typing-effect]")
   };
+
+  mountTypingEffect({
+    input: elements.input,
+    container: elements.typingEffect,
+    documentRef
+  });
 
   mountPlaceholderCycler({
     input: elements.input,
