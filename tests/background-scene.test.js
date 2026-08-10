@@ -4,36 +4,32 @@ import { test } from "node:test";
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
-test("3D background scene is included behind the application", () => {
+test("3D flower background is included behind the application", () => {
   const html = read("index.html");
 
   assert.match(html, /<div class="background-scene" aria-hidden="true">/);
-  assert.match(html, /scene-plane-one/);
-  assert.match(html, /scene-plane-two/);
-  assert.match(html, /scene-plane-three/);
-  assert.match(html, /scene-plane-four/);
+  assert.match(html, /<div class="flower-scene">/);
+  assert.doesNotMatch(html, /scene-plane/);
+
+  const petalMatches = html.match(/class="flower-petal flower-petal-/g) ?? [];
+
+  assert.equal(petalMatches.length, 10);
+  assert.match(html, /class="flower-center"/);
 });
 
-test("3D background scene defines perspective and autoplay animations", () => {
+test("3D flower background defines perspective and autoplay animations", () => {
   const css = read("src/styles.css");
 
   assert.match(css, /\.background-scene\s*\{[\s\S]*perspective:\s*1200px/);
-  assert.match(css, /transform-style:\s*preserve-3d/);
-  assert.match(css, /@keyframes scene-drift-one/);
-  assert.match(css, /@keyframes scene-drift-two/);
-  assert.match(css, /@keyframes scene-drift-three/);
-  assert.match(css, /animation:\s*scene-drift-one/);
+  assert.match(css, /\.flower-scene\s*\{[\s\S]*animation:\s*flower-float/);
+  assert.match(css, /\.flower-petal\s*\{[\s\S]*animation:\s*flower-petal-bloom/);
+  assert.match(css, /@keyframes flower-float/);
+  assert.match(css, /@keyframes flower-petal-bloom/);
 });
 
-test("3D animation definitions are not duplicated in responsive styles", () => {
+test("3D flower animation definitions are not duplicated in responsive styles", () => {
   const css = read("src/styles.css");
-  const animationNames = [
-    "scene-drift-one",
-    "scene-drift-two",
-    "scene-drift-three",
-    "scene-drift-four",
-    "scene-dust-float",
-  ];
+  const animationNames = ["flower-float", "flower-petal-bloom", "scene-dust-float"];
 
   animationNames.forEach((animationName) => {
     const definitions = css.match(new RegExp(`@keyframes ${animationName}`, "g")) ?? [];
