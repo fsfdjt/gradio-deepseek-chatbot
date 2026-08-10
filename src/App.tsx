@@ -93,7 +93,7 @@ export default function App() {
         setIsHydrated(true);
       })
       .catch(() => {
-        setMessage("读取本地 IndexedDB 数据失败，已进入空白数据状态。");
+        setMessage("读取本地 IndexedDB 数据失败，已进入空白数据状态");
         setIsHydrated(true);
       });
   }, []);
@@ -104,7 +104,7 @@ export default function App() {
     }
 
     saveAppData(data).catch(() => {
-      setMessage("保存本地数据失败，请检查浏览器 IndexedDB 权限。");
+      setMessage("保存本地数据失败，请检查浏览器 IndexedDB 权限");
     });
   }, [data, isHydrated]);
 
@@ -120,8 +120,8 @@ export default function App() {
       ? {
           label: selectedProject?.name ?? "项目",
           description: selectedProject
-            ? "管理这个项目里的清单条目。"
-            : "从左侧快速新增一个项目后开始管理。",
+            ? "管理这个项目里的清单条目"
+            : "从左侧快速新增一个项目后开始管理",
         }
       : (pages.find((page) => page.id === activePage) ?? pages[0]);
 
@@ -307,24 +307,24 @@ export default function App() {
               link.download = `work-life-hub-backup-${today}.json`;
               link.click();
               URL.revokeObjectURL(link.href);
-              setMessage("已导出 JSON 备份。");
+              setMessage("已导出 JSON 备份");
             }}
             onImport={async (file) => {
               try {
                 const backup = parseBackup(await file.text());
                 setData(backup.data);
                 await saveAppData(backup.data);
-                setMessage("已导入 JSON 备份。");
+                setMessage("已导入 JSON 备份");
               } catch (error) {
-                setMessage(error instanceof Error ? error.message : "导入失败。");
+                setMessage(error instanceof Error ? error.message : "导入失败");
               }
             }}
             onClear={async () => {
-              if (confirm("确定清空全部本地数据吗？此操作不可恢复。")) {
+              if (confirm("确定清空全部本地数据吗？此操作不可恢复")) {
                 await clearAppData();
                 setData(createEmptyData());
                 setSelectedProjectId("");
-                setMessage("已清空当前浏览器中的本地数据。");
+                setMessage("已清空当前浏览器中的本地数据");
               }
             }}
           />
@@ -395,7 +395,7 @@ function HomePage({
               </label>
             ))
           ) : (
-            <p className="empty-text">今天还没有任务。</p>
+            <p className="empty-text">今天还没有任务</p>
           )}
         </div>
       </section>
@@ -429,7 +429,7 @@ function HomePage({
               {item.content}
             </p>
           ))}
-          {!summary.recentMemos.length ? <p className="empty-text">暂无备忘。</p> : null}
+          {!summary.recentMemos.length ? <p className="empty-text">暂无备忘</p> : null}
         </div>
       </section>
 
@@ -462,7 +462,7 @@ function HomePage({
               </article>
             ))
           ) : (
-            <p className="empty-text">今天还没有可排序的记录。</p>
+            <p className="empty-text">今天还没有可排序的记录</p>
           )}
         </div>
       </section>
@@ -585,7 +585,7 @@ function TodayPage({
         ))}
       </div>
       <RecordList
-        empty="暂无任务。"
+        empty="暂无任务"
         items={tasks.map((task) => ({
           id: task.id,
           title: task.title,
@@ -653,7 +653,7 @@ function FitnessPage({
           </button>
         </form>
       }
-      empty="暂无训练记录。"
+      empty="暂无训练记录"
       items={data.workouts.map((item) => ({
         id: item.id,
         title: item.name,
@@ -720,7 +720,7 @@ function DietPage({
           </button>
         </form>
       }
-      empty="暂无饮食记录。"
+      empty="暂无饮食记录"
       items={data.meals.map((item) => ({
         id: item.id,
         title: item.content,
@@ -787,7 +787,7 @@ function FunPage({
           </button>
         </form>
       }
-      empty="暂无娱乐计划。"
+      empty="暂无娱乐计划"
       items={data.entertainments.map((item) => ({
         id: item.id,
         title: item.name,
@@ -866,7 +866,7 @@ function ProjectPage({
               </button>
             </form>
             <RecordList
-              empty="暂无项目条目。"
+              empty="暂无项目条目"
               items={selectedProject.items.map((item) => ({
                 id: item.id,
                 title: item.title,
@@ -883,7 +883,7 @@ function ProjectPage({
             />
           </>
         ) : (
-          <p className="empty-text">先在左侧快速新增一个项目。</p>
+          <p className="empty-text">先在左侧快速新增一个项目</p>
         )}
       </div>
     </section>
@@ -916,13 +916,13 @@ function SettingsPage({
       <div className="panel">
         <h2>本地数据</h2>
         <p className="muted">
-          本网站无需登录。任何能打开当前浏览器的人，都可以看到这里保存的数据。
+          本网站无需登录，任何能打开当前浏览器的人，都可以看到这里保存的数据
         </p>
-        <p className="muted">当前包含 {totalRecords} 条顶层记录。</p>
+        <p className="muted">当前包含 {totalRecords} 条顶层记录</p>
       </div>
       <div className="panel">
         <h2>备份与恢复</h2>
-        <p className="muted">数据只保存在当前浏览器。换设备或换浏览器前，请先导出 JSON。</p>
+        <p className="muted">数据只保存在当前浏览器，换设备或换浏览器前，请先导出 JSON</p>
         <div className="settings-actions">
           <button type="button" onClick={onExport}>
             <Download size={18} />
@@ -1025,3 +1025,4 @@ function RecordList({
     </section>
   );
 }
+

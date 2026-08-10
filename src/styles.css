@@ -681,3 +681,21 @@ button:disabled {
     }
   }
 }
+
+/* Smaller grey helper text */
+.muted,
+.empty-text,
+.local-note,
+.app-message,
+.topbar p,
+.stat-card p,
+.record-row span,
+.compact-item,
+.panel p,
+.timeline-item span,
+.sidebar-section-title,
+.empty-sidebar-text,
+.sidebar-projects button small {
+  font-size: 12px;
+  line-height: 1.45;
+}

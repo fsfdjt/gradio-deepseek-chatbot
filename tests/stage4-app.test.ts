@@ -130,3 +130,14 @@ test("macOS weather glass background is applied with Safari prefix and dark mode
   assert.match(css, /prefers-color-scheme: dark/);
   assert.match(css, /background: rgba\(0, 0, 0, 0\.2\)/);
 });
+
+test("grey helper text is smaller and UI hints avoid Chinese periods", () => {
+  const css = readFileSync("src/styles.css", "utf8");
+  const appSource = readFileSync("src/App.tsx", "utf8");
+  const structureSource = readFileSync("src/lib/appStructure.ts", "utf8");
+
+  assert.match(css, /Smaller grey helper text/);
+  assert.match(css, /font-size: 12px/);
+  assert.equal(appSource.includes("。"), false);
+  assert.equal(structureSource.includes("。"), false);
+});
