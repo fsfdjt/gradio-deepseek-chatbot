@@ -1,0 +1,23 @@
+apiVersion: critiq.dev/v1alpha1
+kind: CritiqConfig
+catalog:
+  package: "@critiq/rules"
+preset: recommended
+disableRules:
+  - ts.correctness.undeclared-variable
+  - ts.correctness.unused-variable
+  - ts.quality.swallowed-error
+disableCategories: []
+disableLanguages: []
+includeTests: false
+ignorePaths:
+  - .codex/**
+  - node_modules/**
+  - tests/**
+  - src/styles.css
+  - assets/**
+  - "*.md"
+  - package.json
+  - package-lock.json
+  - .gitignore
+severityOverrides: {}

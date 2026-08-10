@@ -148,8 +148,9 @@ export function createReceiptController(elements, options = {}) {
     try {
       await copy(render(currentReceipt));
       setMessage("小票文字已复制。");
-    } catch {
-      setMessage("复制失败，请手动选择小票文字。");
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : "未知错误";
+      setMessage(`复制失败：${reason}。请手动选择小票文字。`);
     }
   });
 
@@ -158,8 +159,9 @@ export function createReceiptController(elements, options = {}) {
     try {
       saveImage(currentReceipt);
       setMessage("小票已装进口袋。");
-    } catch {
-      setMessage("图片保存失败，请稍后再试。");
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : "未知错误";
+      setMessage(`图片保存失败：${reason}。请稍后再试。`);
     }
   });
 
