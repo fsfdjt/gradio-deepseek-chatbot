@@ -31,6 +31,171 @@ textarea {
   font: inherit;
 }
 
+.background-scene {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
+.background-scene::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(12, 12, 11, 0.56);
+}
+
+.app-shell,
+.site-note {
+  position: relative;
+  z-index: 1;
+}
+
+.scene-plane {
+  position: absolute;
+  display: block;
+  width: clamp(190px, 26vw, 420px);
+  aspect-ratio: 1.48;
+  border: 1px solid rgba(255, 247, 230, 0.32);
+  border-radius: 8px;
+  background: rgba(255, 250, 240, 0.1);
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.34);
+  transform-style: preserve-3d;
+  backdrop-filter: blur(2px);
+}
+
+.scene-plane::before,
+.scene-plane::after {
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  background: rgba(255, 247, 230, 0.36);
+}
+
+.scene-plane::before {
+  top: 34%;
+  box-shadow: 0 18px 0 rgba(255, 247, 230, 0.26), 0 36px 0 rgba(255, 247, 230, 0.16);
+}
+
+.scene-plane::after {
+  top: 14%;
+  right: 42%;
+}
+
+.scene-plane-one {
+  top: 9%;
+  left: -4%;
+  border-color: rgba(255, 204, 102, 0.5);
+  background: rgba(255, 204, 102, 0.08);
+  animation: scene-drift-one 18s ease-in-out infinite alternate;
+}
+
+.scene-plane-two {
+  top: 18%;
+  right: -8%;
+  width: clamp(230px, 31vw, 510px);
+  border-color: rgba(135, 224, 197, 0.4);
+  background: rgba(135, 224, 197, 0.07);
+  animation: scene-drift-two 22s ease-in-out infinite alternate;
+}
+
+.scene-plane-three {
+  bottom: -4%;
+  left: 24%;
+  width: clamp(180px, 23vw, 360px);
+  border-color: rgba(255, 143, 143, 0.34);
+  background: rgba(255, 143, 143, 0.06);
+  animation: scene-drift-three 20s ease-in-out infinite alternate;
+}
+
+.scene-plane-four {
+  bottom: 12%;
+  left: 2%;
+  width: clamp(140px, 18vw, 280px);
+  border-color: rgba(166, 189, 255, 0.34);
+  background: rgba(166, 189, 255, 0.05);
+  animation: scene-drift-four 16s ease-in-out infinite alternate;
+}
+
+.scene-dust {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255, 204, 102, 0.78);
+  box-shadow: 0 0 28px rgba(255, 204, 102, 0.62);
+}
+
+.scene-dust-one {
+  top: 28%;
+  left: 48%;
+  animation: scene-dust-float 10s ease-in-out infinite alternate;
+}
+
+.scene-dust-two {
+  right: 24%;
+  bottom: 24%;
+  background: rgba(135, 224, 197, 0.7);
+  box-shadow: 0 0 28px rgba(135, 224, 197, 0.5);
+  animation: scene-dust-float 13s ease-in-out -4s infinite alternate;
+}
+
+@keyframes scene-drift-one {
+  from {
+    transform: translate3d(0, 0, -180px) rotateX(58deg) rotateY(-26deg) rotateZ(-12deg);
+  }
+
+  to {
+    transform: translate3d(8vw, 7vh, 120px) rotateX(46deg) rotateY(-8deg) rotateZ(5deg);
+  }
+}
+
+@keyframes scene-drift-two {
+  from {
+    transform: translate3d(0, 0, -220px) rotateX(52deg) rotateY(30deg) rotateZ(12deg);
+  }
+
+  to {
+    transform: translate3d(-9vw, 10vh, 100px) rotateX(38deg) rotateY(10deg) rotateZ(-6deg);
+  }
+}
+
+@keyframes scene-drift-three {
+  from {
+    transform: translate3d(0, 0, -150px) rotateX(64deg) rotateY(14deg) rotateZ(-8deg);
+  }
+
+  to {
+    transform: translate3d(12vw, -9vh, 90px) rotateX(46deg) rotateY(28deg) rotateZ(7deg);
+  }
+}
+
+@keyframes scene-drift-four {
+  from {
+    transform: translate3d(0, 0, -110px) rotateX(46deg) rotateY(-22deg) rotateZ(16deg);
+  }
+
+  to {
+    transform: translate3d(8vw, 6vh, 80px) rotateX(58deg) rotateY(-6deg) rotateZ(-4deg);
+  }
+}
+
+@keyframes scene-dust-float {
+  from {
+    transform: translate3d(-20px, -18px, 0) scale(0.8);
+    opacity: 0.35;
+  }
+
+  to {
+    transform: translate3d(34px, 26px, 80px) scale(1.3);
+    opacity: 0.9;
+  }
+}
 .app-shell {
   width: min(1120px, calc(100% - 32px));
   min-height: calc(100vh - 56px);
