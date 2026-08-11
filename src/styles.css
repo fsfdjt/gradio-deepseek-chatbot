@@ -12,12 +12,20 @@
   --success: #16a34a;
   --destructive: #b91c1c;
   --radius: 8px;
+  --radius-lg: 16px;
+  --surface: rgba(255, 255, 255, 0.58);
+  --surface-strong: rgba(255, 255, 255, 0.78);
+  --surface-muted: rgba(248, 250, 252, 0.72);
+  --ring: rgb(37 99 235 / 28%);
+  --panel-highlight: rgb(255 255 255 / 48%);
+  --row-hover: rgb(255 255 255 / 66%);
   --shadow-sm: 0 1px 2px rgb(15 23 42 / 5%);
   --shadow-md: 0 12px 32px rgb(15 23 42 / 8%);
+  --shadow-lg: 0 24px 70px rgb(15 23 42 / 12%);
   color: var(--foreground);
   background: var(--background);
   font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Segoe UI Variable", "SF Pro Display", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -35,6 +43,9 @@
   --input: #67e8f9;
   --primary: #0891b2;
   --success: #059669;
+  --ring: rgb(8 145 178 / 28%);
+  --surface: rgba(236, 254, 255, 0.58);
+  --surface-strong: rgba(248, 250, 252, 0.82);
 }
 
 :root[data-theme="forest"] {
@@ -47,6 +58,9 @@
   --input: #86efac;
   --primary: #16a34a;
   --success: #15803d;
+  --ring: rgb(22 163 74 / 26%);
+  --surface: rgba(240, 253, 244, 0.6);
+  --surface-strong: rgba(251, 254, 252, 0.82);
 }
 
 :root[data-theme="sunset"] {
@@ -59,6 +73,9 @@
   --input: #fdba74;
   --primary: #ea580c;
   --success: #65a30d;
+  --ring: rgb(234 88 12 / 26%);
+  --surface: rgba(255, 247, 237, 0.62);
+  --surface-strong: rgba(255, 251, 247, 0.82);
 }
 
 :root[data-theme="midnight"] {
@@ -72,6 +89,12 @@
   --primary: #38bdf8;
   --primary-foreground: #082f49;
   --success: #22c55e;
+  --ring: rgb(56 189 248 / 28%);
+  --surface: rgba(15, 23, 42, 0.54);
+  --surface-strong: rgba(17, 24, 39, 0.78);
+  --surface-muted: rgba(30, 41, 59, 0.72);
+  --panel-highlight: rgb(255 255 255 / 12%);
+  --row-hover: rgb(30 41 59 / 72%);
 }
 
 body {
@@ -92,6 +115,31 @@ textarea {
 
 button {
   cursor: pointer;
+}
+
+button,
+input,
+select,
+textarea {
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 0;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px var(--ring);
 }
 
 .auth-screen {
@@ -129,7 +177,7 @@ button {
 .auth-panel label {
   display: grid;
   gap: 7px;
-  color: #475569;
+  color: var(--muted-foreground);
 }
 
 .eyebrow {
@@ -142,9 +190,9 @@ select,
 textarea {
   width: 100%;
   border: 1px solid var(--input);
-  border-radius: var(--radius);
-  padding: 10px 11px;
-  background: var(--card);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: var(--surface-strong);
   color: var(--foreground);
 }
 
@@ -159,9 +207,9 @@ textarea {
 .summary-list button,
 .panel-heading button {
   border: 1px solid var(--border);
-  background: var(--card);
+  background: var(--surface-strong);
   color: var(--foreground);
-  border-radius: var(--radius);
+  border-radius: 12px;
   padding: 9px 12px;
   display: inline-flex;
   align-items: center;
@@ -184,14 +232,18 @@ textarea {
 .primary-button,
 .form-panel button[type="submit"],
 .inline-form button[type="submit"] {
-  background: #2563eb;
+  background:
+    linear-gradient(135deg, rgb(255 255 255 / 20%), transparent),
+    var(--primary);
   border-color: var(--primary);
   color: var(--primary-foreground);
+  box-shadow: 0 10px 22px rgb(37 99 235 / 18%);
 }
 
 .danger-button {
   color: var(--destructive) !important;
-  border-color: #fecaca !important;
+  border-color: rgb(254 202 202 / 86%) !important;
+  background: rgb(254 242 242 / 70%) !important;
 }
 
 .error-text {
@@ -205,34 +257,49 @@ textarea {
 }
 
 .app-shell {
-  min-height: 100vh;
+  min-height: 100dvh;
   display: grid;
-  grid-template-columns: 264px minmax(0, 1fr);
+  grid-template-columns: 276px minmax(0, 1fr);
   background: var(--background);
 }
 
 .sidebar {
-  background: #ffffff;
-  border-right: 1px solid var(--border);
-  padding: 18px 14px;
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  overflow: auto;
+  background:
+    linear-gradient(180deg, var(--surface-strong), var(--surface)),
+    rgb(255 255 255 / 72%);
+  border-right: 1px solid rgb(255 255 255 / 44%);
+  padding: 20px 16px;
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+  box-shadow: 14px 0 48px rgb(15 23 42 / 7%);
 }
 
 .brand {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-weight: 500;
-  margin-bottom: 18px;
+  font-weight: 650;
+  margin-bottom: 20px;
+  letter-spacing: 0;
 }
 
 .brand-mark {
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
   display: grid;
   place-items: center;
-  border-radius: 8px;
-  background: #dbeafe;
+  border-radius: 12px;
+  background:
+    linear-gradient(135deg, rgb(255 255 255 / 74%), rgb(255 255 255 / 24%)),
+    var(--muted);
   color: var(--primary);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 62%),
+    0 10px 24px rgb(37 99 235 / 16%);
 }
 
 .quick-add-project {
@@ -245,7 +312,7 @@ textarea {
 
 .quick-add-project input {
   min-width: 0;
-  background: #ffffff;
+  background: var(--surface-strong);
 }
 
 .quick-add-project button {
@@ -259,7 +326,7 @@ textarea {
 
 .main-nav {
   display: grid;
-  gap: 6px;
+  gap: 7px;
 }
 
 .main-nav button {
@@ -267,18 +334,29 @@ textarea {
   align-items: center;
   gap: 10px;
   width: 100%;
-  border: 0;
+  border: 1px solid transparent;
   background: transparent;
-  color: #334155;
+  color: var(--muted-foreground);
   text-align: left;
-  border-radius: var(--radius);
-  padding: 10px 11px;
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.main-nav button:hover,
+.sidebar-projects button:hover {
+  background: var(--surface-muted);
+  border-color: rgb(255 255 255 / 46%);
 }
 
 .main-nav button[aria-pressed="true"] {
-  background: var(--muted);
-  box-shadow: inset 3px 0 0 var(--primary);
-  color: #0f172a;
+  background:
+    linear-gradient(135deg, rgb(255 255 255 / 58%), rgb(255 255 255 / 22%)),
+    var(--muted);
+  border-color: rgb(255 255 255 / 62%);
+  box-shadow:
+    inset 3px 0 0 var(--primary),
+    0 10px 24px rgb(15 23 42 / 6%);
+  color: var(--foreground);
 }
 
 .sidebar-projects {
@@ -302,17 +380,18 @@ textarea {
   align-items: center;
   gap: 8px;
   width: 100%;
-  border: 0;
+  border: 1px solid transparent;
   background: transparent;
-  color: #334155;
+  color: var(--muted-foreground);
   text-align: left;
-  border-radius: var(--radius);
+  border-radius: 12px;
   padding: 9px 10px;
 }
 
 .sidebar-projects button[aria-pressed="true"] {
-  background: var(--muted);
-  color: #0f172a;
+  background: var(--surface-muted);
+  color: var(--foreground);
+  border-color: rgb(255 255 255 / 54%);
 }
 
 .sidebar-projects button span {
@@ -363,15 +442,16 @@ textarea {
 }
 
 .topbar {
-  min-height: 70px;
-  padding: 14px 22px;
+  min-height: 78px;
+  padding: 16px 28px;
   display: flex;
   justify-content: space-between;
   gap: 16px;
   align-items: center;
-  background: rgb(255 255 255 / 84%);
-  border-bottom: 1px solid var(--border);
-  backdrop-filter: blur(10px);
+  background: linear-gradient(180deg, var(--surface-strong), rgb(255 255 255 / 38%));
+  border-bottom: 1px solid rgb(255 255 255 / 46%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
 }
 
 .topbar h1,
@@ -380,8 +460,9 @@ textarea {
 }
 
 .topbar h1 {
-  font-size: 22px;
-  font-weight: 500;
+  font-size: clamp(21px, 2vw, 28px);
+  font-weight: 700;
+  letter-spacing: 0;
 }
 
 .topbar p {
@@ -392,7 +473,9 @@ textarea {
 .page-stack,
 .custom-grid,
 .project-page {
-  padding: 24px;
+  width: min(100%, 1240px);
+  margin: 0 auto;
+  padding: 28px;
 }
 
 .page-grid {
@@ -414,11 +497,30 @@ textarea {
 
 .panel,
 .stat-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid rgb(255 255 255 / 42%);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
   padding: 16px;
+}
+
+.panel::before,
+.stat-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, var(--panel-highlight), transparent 28%),
+    radial-gradient(circle at 0 0, rgb(255 255 255 / 42%), transparent 32%);
+}
+
+.panel > *,
+.stat-card > * {
+  position: relative;
+  z-index: 1;
 }
 
 .page-grid > .panel,
@@ -449,9 +551,27 @@ textarea {
 }
 
 .stat-card:hover {
-  border-color: #bfdbfe;
-  box-shadow: var(--shadow-md);
-  transform: translateY(-1px);
+  border-color: rgb(255 255 255 / 70%);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.stat-card:nth-child(1) {
+  background:
+    linear-gradient(135deg, rgb(219 234 254 / 64%), rgb(255 255 255 / 28%)),
+    var(--surface);
+}
+
+.stat-card:nth-child(2) {
+  background:
+    linear-gradient(135deg, rgb(220 252 231 / 62%), rgb(255 255 255 / 28%)),
+    var(--surface);
+}
+
+.stat-card:nth-child(3) {
+  background:
+    linear-gradient(135deg, rgb(255 237 213 / 66%), rgb(255 255 255 / 28%)),
+    var(--surface);
 }
 
 .stat-card span,
@@ -477,13 +597,14 @@ textarea {
   justify-content: space-between;
   gap: 12px;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .panel h2 {
   margin: 0;
-  font-size: 17px;
-  font-weight: 500;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0;
 }
 
 .inline-form,
@@ -509,17 +630,32 @@ textarea {
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 10px;
-  border: 1px solid rgb(191 219 254 / 76%);
+  border: 1px solid rgb(255 255 255 / 54%);
   border-left: 4px solid var(--record-accent);
   border-radius: 12px;
-  background: var(--record-bg);
+  background:
+    linear-gradient(135deg, rgb(255 255 255 / 52%), transparent),
+    var(--record-bg);
   box-shadow: 0 8px 20px rgb(15 23 42 / 5%);
   padding: 10px 12px;
 }
 
 .list-row:first-child,
 .record-row:first-child {
-  border-top: 1px solid rgb(191 219 254 / 76%);
+  border-top: 1px solid rgb(255 255 255 / 54%);
+}
+
+.list-row:hover,
+.record-row:hover,
+.compact-item:hover,
+.timeline-item:hover,
+.calendar-day:hover,
+.theme-option:hover {
+  background:
+    linear-gradient(135deg, rgb(255 255 255 / 68%), transparent),
+    var(--row-hover);
+  box-shadow: 0 14px 34px rgb(15 23 42 / 8%);
+  transform: translateY(-1px);
 }
 
 .list-row:nth-child(5n + 2),
@@ -589,12 +725,18 @@ textarea {
   --record-accent: #2563eb;
   --record-bg: rgb(239 246 255 / 72%);
   margin: 0;
-  border: 1px solid rgb(191 219 254 / 76%);
+  border: 1px solid rgb(255 255 255 / 54%);
   border-left: 4px solid var(--record-accent);
   border-radius: 12px;
-  background: var(--record-bg);
+  background:
+    linear-gradient(135deg, rgb(255 255 255 / 52%), transparent),
+    var(--record-bg);
   box-shadow: 0 8px 20px rgb(15 23 42 / 5%);
   padding: 10px 12px;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
 }
 
 .summary-list,
@@ -611,16 +753,22 @@ textarea {
   grid-template-columns: 92px minmax(0, 1fr);
   gap: 12px;
   align-items: start;
-  border: 1px solid rgb(191 219 254 / 76%);
+  border: 1px solid rgb(255 255 255 / 54%);
   border-left: 4px solid var(--record-accent);
   border-radius: 12px;
-  background: var(--record-bg);
+  background:
+    linear-gradient(135deg, rgb(255 255 255 / 52%), transparent),
+    var(--record-bg);
   box-shadow: 0 8px 20px rgb(15 23 42 / 5%);
   padding: 10px 12px;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
 }
 
 .timeline-item:first-child {
-  border-top: 1px solid rgb(191 219 254 / 76%);
+  border-top: 1px solid rgb(255 255 255 / 54%);
 }
 
 .timeline-item time {
@@ -669,8 +817,10 @@ textarea {
   gap: 3px;
   padding: 10px 12px;
   border-radius: 12px;
-  background: rgb(248 250 252 / 84%);
-  border: 1px solid rgb(191 219 254 / 66%);
+  background:
+    linear-gradient(135deg, rgb(255 255 255 / 54%), transparent),
+    var(--surface-muted);
+  border: 1px solid rgb(255 255 255 / 46%);
 }
 
 .smart-signal span {
@@ -704,8 +854,8 @@ textarea {
   gap: 4px;
   padding: 10px 12px;
   border-radius: 12px;
-  border: 1px solid rgb(191 219 254 / 66%);
-  background: rgb(248 250 252 / 86%);
+  border: 1px solid rgb(255 255 255 / 48%);
+  background: var(--surface-muted);
 }
 
 .reminder-item span {
@@ -722,9 +872,9 @@ textarea {
   display: grid;
   gap: 4px;
   text-align: left;
-  border: 1px solid var(--border);
+  border: 1px solid rgb(255 255 255 / 48%);
   border-radius: 12px;
-  background: rgb(255 255 255 / 74%);
+  background: var(--surface-muted);
   color: var(--foreground);
   padding: 12px;
 }
@@ -762,10 +912,11 @@ textarea {
   align-content: start;
   gap: 6px;
   padding: 10px;
-  border: 1px solid var(--border);
+  border: 1px solid rgb(255 255 255 / 50%);
   border-radius: 12px;
-  background: rgb(255 255 255 / 82%);
+  background: var(--surface-muted);
   text-align: left;
+  box-shadow: 0 8px 20px rgb(15 23 42 / 4%);
 }
 
 .calendar-day strong {
@@ -823,14 +974,14 @@ textarea {
 .bar-chart-track {
   height: 10px;
   border-radius: 999px;
-  background: rgb(226 232 240 / 90%);
+  background: rgb(226 232 240 / 72%);
   overflow: hidden;
 }
 
 .bar-chart-fill {
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--primary), #22c55e);
+  background: linear-gradient(90deg, var(--primary), color-mix(in srgb, var(--primary) 58%, var(--success)));
 }
 
 .macro-grid {
@@ -845,8 +996,8 @@ textarea {
   gap: 4px;
   padding: 12px;
   border-radius: 12px;
-  background: rgb(255 255 255 / 74%);
-  border: 1px solid var(--border);
+  background: var(--surface-muted);
+  border: 1px solid rgb(255 255 255 / 48%);
 }
 
 .macro-grid span {
@@ -866,7 +1017,7 @@ textarea {
 }
 
 .time-remaining-row span {
-  color: #475569;
+  color: var(--muted-foreground);
 }
 
 .time-remaining-row strong {
@@ -920,6 +1071,9 @@ button:disabled {
   }
 
   .sidebar {
+    position: relative;
+    top: auto;
+    height: auto;
     border-right: 0;
     border-bottom: 1px solid #d5dce5;
   }
@@ -976,6 +1130,9 @@ button:disabled {
 .stat-card {
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.15);
+  background:
+    linear-gradient(145deg, rgb(255 255 255 / 42%), rgb(255 255 255 / 10%)),
+    var(--surface);
 
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   backdrop-filter: blur(20px) saturate(180%);
@@ -1006,6 +1163,9 @@ button:disabled {
   .panel,
   .stat-card {
     background: rgba(0, 0, 0, 0.2);
+    background:
+      linear-gradient(145deg, rgb(255 255 255 / 9%), rgb(255 255 255 / 3%)),
+      var(--surface);
     border-color: rgba(255, 255, 255, 0.14);
     box-shadow:
       0 8px 32px rgba(0, 0, 0, 0.35),
