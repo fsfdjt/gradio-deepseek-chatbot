@@ -2,7 +2,7 @@ import type { PageId } from "./appStructure";
 
 export type LayoutPreset = {
   id: PageId;
-  kind: "dashboard" | "record-manager" | "project-detail" | "settings";
+  kind: "dashboard" | "calendar" | "stats" | "record-manager" | "project-detail" | "settings";
   components: Array<"card" | "form" | "list" | "progress" | "timeline" | "sidebar">;
 };
 
@@ -11,6 +11,16 @@ export const layoutPresets: Record<PageId, LayoutPreset> = {
     id: "home",
     kind: "dashboard",
     components: ["card", "progress", "timeline", "sidebar"],
+  },
+  calendar: {
+    id: "calendar",
+    kind: "calendar",
+    components: ["card", "timeline", "list"],
+  },
+  stats: {
+    id: "stats",
+    kind: "stats",
+    components: ["card", "progress", "list"],
   },
   today: {
     id: "today",

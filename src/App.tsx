@@ -1,5 +1,7 @@
 import {
   CheckSquare,
+  CalendarDays,
+  BarChart3,
   Download,
   Dumbbell,
   FolderPlus,
@@ -48,6 +50,12 @@ import {
   updateWorkout,
 } from "./lib/domain";
 import { getLayoutPreset } from "./lib/layoutPresets";
+import { getSmartInsights } from "./lib/insights";
+import { getMonthCalendar } from "./lib/calendar";
+import { getStatsOverview } from "./lib/stats";
+import { getReminderItems } from "./lib/reminders";
+import { getNutritionOverview } from "./lib/nutrition";
+import { applyTheme, loadTheme, saveTheme, themeChoices, type ThemeId } from "./lib/theme";
 import { clearAppData, loadAppData, saveAppData } from "./lib/storage";
 import type {
   AppData,
@@ -61,6 +69,8 @@ import type {
 
 const icons: Record<PageId, typeof Home> = {
   home: Home,
+  calendar: CalendarDays,
+  stats: BarChart3,
   today: CheckSquare,
   fitness: Dumbbell,
   diet: Utensils,
@@ -82,9 +92,13 @@ export default function App() {
   const [data, setData] = useState<AppData>(() => createEmptyData());
   const [isHydrated, setIsHydrated] = useState(false);
   const [message, setMessage] = useState("");
+  const [theme, setTheme] = useState<ThemeId>(() => loadTheme());
   const [taskFilter, setTaskFilter] = useState<"all" | TaskStatus>("all");
   const [selectedProjectId, setSelectedProjectId] = useState("");
   const [quickProjectName, setQuickProjectName] = useState("");
+  const [notificationPermission, setNotificationPermission] = useState<
+    NotificationPermission | "unsupported"
+  >(() => (typeof Notification === "undefined" ? "unsupported" : Notification.permission));
 
   useEffect(() => {
     loadAppData()
@@ -108,8 +122,36 @@ export default function App() {
     });
   }, [data, isHydrated]);
 
+  const reminderItems = useMemo(() => getReminderItems(data, new Date()), [data]);
+
+  useEffect(() => {
+    applyTheme(theme);
+    saveTheme(theme);
+  }, [theme]);
+
+  useEffect(() => {
+    if (notificationPermission !== "granted" || typeof Notification === "undefined") {
+      return;
+    }
+
+    const timers = reminderItems
+      .filter((item) => item.minutesUntil >= 0 && item.minutesUntil <= 24 * 60)
+      .map((item) =>
+        window.setTimeout(() => {
+          new Notification("Work Life Hub 提醒", {
+            body: `${item.title} · ${item.timeLabel}`,
+          });
+        }, Math.max(0, new Date(item.scheduledAt).getTime() - Date.now())),
+      );
+
+    return () => {
+      timers.forEach((timer) => window.clearTimeout(timer));
+    };
+  }, [notificationPermission, reminderItems]);
+
   const summary = useMemo(() => getDashboardSummary(data, today), [data]);
   const timeline = useMemo(() => getHomeTimeline(data, today), [data]);
+  const smartInsights = useMemo(() => getSmartInsights(data, today), [data]);
   const timeRemaining = useMemo(() => getTimeRemainingPercentages(new Date()), []);
   const selectedProject =
     data.customProjects.find((project) => project.id === selectedProjectId) ??
@@ -140,6 +182,21 @@ export default function App() {
     setSelectedProjectId(projectId);
     setActivePage("project");
     setQuickProjectName("");
+  }
+
+  async function handleEnableNotifications() {
+    if (typeof Notification === "undefined") {
+      setNotificationPermission("unsupported");
+      setMessage("当前浏览器不支持通知");
+      return;
+    }
+
+    const permission =
+      Notification.permission === "granted"
+        ? "granted"
+        : await Notification.requestPermission();
+    setNotificationPermission(permission);
+    setMessage(permission === "granted" ? "已开启浏览器通知" : "未授予浏览器通知权限");
   }
 
   if (!isHydrated) {
@@ -228,6 +285,7 @@ export default function App() {
           <HomePage
             data={data}
             summary={summary}
+            smartInsights={smartInsights}
             timeline={timeline}
             timeRemaining={timeRemaining}
             onTaskDone={(id, done) => mutate((value) => setTaskDone(value, id, done))}
@@ -235,6 +293,8 @@ export default function App() {
             onOpenPage={setActivePage}
           />
         ) : null}
+        {activePage === "calendar" ? <CalendarPage data={data} /> : null}
+        {activePage === "stats" ? <StatsPage data={data} /> : null}
         {activePage === "today" ? (
           <TodayPage
             data={data}
@@ -297,6 +357,11 @@ export default function App() {
           <SettingsPage
             data={data}
             message={message}
+            theme={theme}
+            reminderItems={reminderItems}
+            notificationPermission={notificationPermission}
+            onEnableNotifications={handleEnableNotifications}
+            onSelectTheme={setTheme}
             onExport={() => {
               const backup = createBackup(data);
               const blob = new Blob([JSON.stringify(backup, null, 2)], {
@@ -337,6 +402,7 @@ export default function App() {
 function HomePage({
   data,
   summary,
+  smartInsights,
   timeline,
   timeRemaining,
   onTaskDone,
@@ -345,6 +411,7 @@ function HomePage({
 }: {
   data: AppData;
   summary: ReturnType<typeof getDashboardSummary>;
+  smartInsights: ReturnType<typeof getSmartInsights>;
   timeline: ReturnType<typeof getHomeTimeline>;
   timeRemaining: ReturnType<typeof getTimeRemainingPercentages>;
   onTaskDone: (id: string, done: boolean) => void;
@@ -435,6 +502,31 @@ function HomePage({
 
       <section className="panel">
         <div className="panel-heading">
+          <h2>AI 总结</h2>
+        </div>
+        <div className="smart-insight">
+          <strong>{smartInsights.headline}</strong>
+          <p>{smartInsights.summary}</p>
+        </div>
+        <div className="smart-signal-list">
+          {smartInsights.signals.map((signal) => (
+            <div key={signal.label} className="smart-signal">
+              <span>{signal.label}</span>
+              <strong>{signal.value}</strong>
+            </div>
+          ))}
+        </div>
+        <div className="smart-recommendations">
+          {smartInsights.recommendations.map((item) => (
+            <p key={item} className="smart-recommendation">
+              {item}
+            </p>
+          ))}
+        </div>
+      </section>
+
+      <section className="panel">
+        <div className="panel-heading">
           <h2>模块摘要</h2>
         </div>
         <div className="summary-list">
@@ -476,6 +568,214 @@ function HomePage({
           <TimeRemainingRow label="本月" value={timeRemaining.month} />
           <TimeRemainingRow label="本年" value={timeRemaining.year} />
         </div>
+      </section>
+    </section>
+  );
+}
+
+function CalendarPage({ data }: { data: AppData }) {
+  const [cursor, setCursor] = useState(() => new Date());
+  const [selectedDate, setSelectedDate] = useState(today);
+  const month = useMemo(() => getMonthCalendar(data, cursor), [data, cursor]);
+  const selectedDay =
+    month.days.find((day) => day.date === selectedDate) ??
+    month.days.find((day) => day.isToday) ??
+    month.days[0];
+
+  return (
+    <section className="page-stack">
+      <section className="panel">
+        <div className="panel-heading">
+          <h2>{month.label}</h2>
+          <div className="row-actions">
+            <button
+              type="button"
+              onClick={() =>
+                setCursor((current) => new Date(current.getFullYear(), current.getMonth() - 1, 1))
+              }
+            >
+              上月
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                setCursor((current) => new Date(current.getFullYear(), current.getMonth() + 1, 1))
+              }
+            >
+              下月
+            </button>
+          </div>
+        </div>
+        <div className="calendar-weekdays" aria-hidden="true">
+          {["一", "二", "三", "四", "五", "六", "日"].map((label) => (
+            <span key={label}>{label}</span>
+          ))}
+        </div>
+        <div className="calendar-grid">
+          {month.days.map((day) => (
+            <button
+              key={day.date}
+              type="button"
+              className={[
+                "calendar-day",
+                day.isCurrentMonth ? "" : "is-outside",
+                day.isToday ? "is-today" : "",
+                selectedDay?.date === day.date ? "is-selected" : "",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+              onClick={() => setSelectedDate(day.date)}
+            >
+              <strong>{day.dayOfMonth}</strong>
+              <span>{day.summary}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="panel">
+        <div className="panel-heading">
+          <h2>当天明细</h2>
+        </div>
+        {selectedDay ? (
+          <div className="calendar-detail">
+            <strong>{selectedDay.date}</strong>
+            <p>{selectedDay.summary}</p>
+            <div className="smart-signal-list">
+              <div className="smart-signal">
+                <span>任务</span>
+                <strong>{selectedDay.counts.tasks}</strong>
+              </div>
+              <div className="smart-signal">
+                <span>训练</span>
+                <strong>{selectedDay.counts.workouts}</strong>
+              </div>
+              <div className="smart-signal">
+                <span>饮食</span>
+                <strong>{selectedDay.counts.meals}</strong>
+              </div>
+              <div className="smart-signal">
+                <span>备忘</span>
+                <strong>{selectedDay.counts.memos}</strong>
+              </div>
+              <div className="smart-signal">
+                <span>娱乐</span>
+                <strong>{selectedDay.counts.entertainments}</strong>
+              </div>
+            </div>
+          </div>
+        ) : null}
+      </section>
+    </section>
+  );
+}
+
+function StatsPage({ data }: { data: AppData }) {
+  const stats = useMemo(() => getStatsOverview(data, today), [data]);
+  const nutrition = useMemo(() => getNutritionOverview(data, today), [data]);
+  const maxWeeklyValue = Math.max(1, ...stats.weeklyActivity.map((point) => point.value));
+
+  return (
+    <section className="page-stack">
+      <section className="panel">
+        <div className="panel-heading">
+          <h2>总览</h2>
+        </div>
+        <div className="smart-signal-list">
+          <div className="smart-signal">
+            <span>总记录</span>
+            <strong>{stats.totalRecords}</strong>
+          </div>
+          <div className="smart-signal">
+            <span>今日完成率</span>
+            <strong>{stats.taskCompletionRate}%</strong>
+          </div>
+          <div className="smart-signal">
+            <span>今日饮水</span>
+            <strong>{stats.todayWaterCups} 杯</strong>
+          </div>
+        </div>
+        <p className="smart-recommendation">{stats.recommendation}</p>
+      </section>
+
+      <section className="panel">
+        <div className="panel-heading">
+          <h2>最近 7 天活动</h2>
+        </div>
+        <div className="bar-chart">
+          {stats.weeklyActivity.map((point) => (
+            <div key={point.date} className="bar-chart-row">
+              <span>{point.label}</span>
+              <div className="bar-chart-track">
+                <div
+                  className="bar-chart-fill"
+                  style={{ width: `${(point.value / maxWeeklyValue) * 100}%` }}
+                />
+              </div>
+              <strong>{point.value}</strong>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="panel">
+        <div className="panel-heading">
+          <h2>模块占比</h2>
+        </div>
+        <div className="module-breakdown">
+          {stats.moduleBreakdown.map((item) => {
+            const total = Math.max(1, stats.totalRecords);
+            const width = Math.round((item.value / total) * 1000) / 10;
+            return (
+              <div key={item.label} className="module-breakdown-row">
+                <span>{item.label}</span>
+                <div className="bar-chart-track">
+                  <div className="bar-chart-fill" style={{ width: `${width}%` }} />
+                </div>
+                <strong>{width}%</strong>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="panel">
+        <div className="panel-heading">
+          <h2>营养与运动估算</h2>
+        </div>
+        <div className="smart-signal-list">
+          <div className="smart-signal">
+            <span>摄入热量</span>
+            <strong>{nutrition.intake.calories} kcal</strong>
+          </div>
+          <div className="smart-signal">
+            <span>运动消耗</span>
+            <strong>{nutrition.burnedCalories} kcal</strong>
+          </div>
+          <div className="smart-signal">
+            <span>净热量</span>
+            <strong>{nutrition.netCalories} kcal</strong>
+          </div>
+          <div className="smart-signal">
+            <span>训练时长</span>
+            <strong>{nutrition.workoutMinutes} 分钟</strong>
+          </div>
+        </div>
+        <div className="macro-grid">
+          <div>
+            <span>蛋白质</span>
+            <strong>{nutrition.intake.protein} g</strong>
+          </div>
+          <div>
+            <span>碳水</span>
+            <strong>{nutrition.intake.carbs} g</strong>
+          </div>
+          <div>
+            <span>脂肪</span>
+            <strong>{nutrition.intake.fat} g</strong>
+          </div>
+        </div>
+        <p className="muted">{nutrition.note}</p>
       </section>
     </section>
   );
@@ -893,12 +1193,22 @@ function ProjectPage({
 function SettingsPage({
   data,
   message,
+  theme,
+  reminderItems,
+  notificationPermission,
+  onEnableNotifications,
+  onSelectTheme,
   onExport,
   onImport,
   onClear,
 }: {
   data: AppData;
   message: string;
+  theme: ThemeId;
+  reminderItems: ReturnType<typeof getReminderItems>;
+  notificationPermission: NotificationPermission | "unsupported";
+  onEnableNotifications: () => void | Promise<void>;
+  onSelectTheme: (theme: ThemeId) => void;
   onExport: () => void;
   onImport: (file: File) => void;
   onClear: () => void;
@@ -919,6 +1229,53 @@ function SettingsPage({
           本网站无需登录，任何能打开当前浏览器的人，都可以看到这里保存的数据
         </p>
         <p className="muted">当前包含 {totalRecords} 条顶层记录</p>
+      </div>
+      <div className="panel">
+        <h2>主题皮肤</h2>
+        <p className="muted">切换整体配色方案，设置会保存在当前浏览器</p>
+        <div className="theme-grid">
+          {themeChoices.map((choice) => (
+            <button
+              type="button"
+              key={choice.id}
+              className={theme === choice.id ? "theme-option is-active" : "theme-option"}
+              aria-pressed={theme === choice.id}
+              onClick={() => onSelectTheme(choice.id)}
+            >
+              <strong>{choice.label}</strong>
+              <span>{choice.description}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="panel">
+        <h2>提醒系统</h2>
+        <p className="muted">
+          {notificationPermission === "unsupported"
+            ? "当前浏览器不支持通知"
+            : notificationPermission === "granted"
+              ? "已允许浏览器通知，系统会在事项到点前弹出提醒"
+              : "浏览器通知尚未开启"}
+        </p>
+        <div className="settings-actions">
+          <button type="button" onClick={onEnableNotifications}>
+            启用通知
+          </button>
+        </div>
+        <div className="reminder-list">
+          {reminderItems.length ? (
+            reminderItems.map((item) => (
+              <div key={`${item.kind}-${item.id}`} className="reminder-item">
+                <strong>{item.title}</strong>
+                <span>
+                  {item.timeLabel} · {item.kind}
+                </span>
+              </div>
+            ))
+          ) : (
+            <p className="empty-text">暂无待提醒事项</p>
+          )}
+        </div>
       </div>
       <div className="panel">
         <h2>备份与恢复</h2>

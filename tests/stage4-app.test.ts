@@ -7,7 +7,16 @@ import { getLayoutPreset } from "../src/lib/layoutPresets.ts";
 test("app navigation exposes every PRD module exactly once", () => {
   assert.deepEqual(
     pages.map((page) => page.label),
-    ["首页总览", "今日计划", "健身计划", "饮食计划", "游戏娱乐", "数据与设置"],
+    [
+      "首页总览",
+      "日历视图",
+      "统计图表",
+      "今日计划",
+      "健身计划",
+      "饮食计划",
+      "游戏娱乐",
+      "数据与设置",
+    ],
   );
 });
 
@@ -15,6 +24,8 @@ test("main app wires all page views and module components", () => {
   const source = readFileSync("src/App.tsx", "utf8");
   for (const component of [
     "HomePage",
+    "CalendarPage",
+    "StatsPage",
     "TodayPage",
     "FitnessPage",
     "DietPage",
@@ -28,6 +39,8 @@ test("main app wires all page views and module components", () => {
 
 test("layout presets automatically choose component patterns for each page", () => {
   assert.equal(getLayoutPreset("home").kind, "dashboard");
+  assert.equal(getLayoutPreset("calendar").kind, "calendar");
+  assert.equal(getLayoutPreset("stats").kind, "stats");
   assert.equal(getLayoutPreset("today").kind, "record-manager");
   assert.equal(getLayoutPreset("project").kind, "project-detail");
   assert.equal(getLayoutPreset("settings").kind, "settings");

@@ -50,3 +50,14 @@ npm run build
 ## 开源协议
 
 MIT
+
+## Native Mobile App
+
+The project includes a Capacitor configuration so the same Vite build can be wrapped as an Android or iOS app.
+
+```bash
+npm run mobile:build
+npm run mobile:sync
+```
+
+For the first native project setup, install the Capacitor CLI and the required platform tools, then run `npx cap add android` or `npx cap add ios`.
