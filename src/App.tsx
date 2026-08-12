@@ -816,7 +816,29 @@ function TodayPage({
   const [startTime, setStartTime] = useState("09:00");
   const [estimatedMinutes, setEstimatedMinutes] = useState(30);
   const [note, setNote] = useState("");
+  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
   const tasks = filterTasks(data.tasks, filter);
+  const editingTask = tasks.find((task) => task.id === editingTaskId);
+
+  function resetTaskForm() {
+    setEditingTaskId(null);
+    setTitle("");
+    setPriority("medium");
+    setPlannedDate(today);
+    setStartTime("09:00");
+    setEstimatedMinutes(30);
+    setNote("");
+  }
+
+  function beginEdit(task: (typeof data.tasks)[number]) {
+    setEditingTaskId(task.id);
+    setTitle(task.title);
+    setPriority(task.priority);
+    setPlannedDate(task.plannedDate);
+    setStartTime(task.startTime);
+    setEstimatedMinutes(task.estimatedMinutes);
+    setNote(task.note);
+  }
 
   return (
     <section className="page-stack">
@@ -824,9 +846,19 @@ function TodayPage({
         className="panel form-panel"
         onSubmit={(event) => {
           event.preventDefault();
-          onAdd({ title, priority, plannedDate, startTime, estimatedMinutes, note });
-          setTitle("");
-          setNote("");
+          if (editingTaskId) {
+            onUpdate(editingTaskId, {
+              title,
+              priority,
+              plannedDate,
+              startTime,
+              estimatedMinutes,
+              note,
+            });
+          } else {
+            onAdd({ title, priority, plannedDate, startTime, estimatedMinutes, note });
+          }
+          resetTaskForm();
         }}
       >
         <input
@@ -869,8 +901,13 @@ function TodayPage({
         />
         <button type="submit">
           <Plus size={18} />
-          新增
+          {editingTask ? "保存修改" : "新增"}
         </button>
+        {editingTask ? (
+          <button type="button" className="secondary-button" onClick={resetTaskForm}>
+            取消编辑
+          </button>
+        ) : null}
       </form>
       <div className="filter-row">
         {(["all", "todo", "doing", "done"] as const).map((item) => (
@@ -892,11 +929,13 @@ function TodayPage({
           meta: `${task.startTime ?? "未设时间"} · ${task.estimatedMinutes ?? 0} 分钟 · ${statusLabel(task.status)} · ${priorityLabel(task.priority)} · ${task.note || "无备注"}`,
           done: task.status === "done",
           onToggle: (done) => onDone(task.id, done),
-          onEdit: () => {
-            const nextTitle = prompt("编辑任务标题", task.title);
-            if (nextTitle) onUpdate(task.id, { title: nextTitle });
+          onEdit: () => beginEdit(task),
+          onDelete: () => {
+            if (editingTaskId === task.id) {
+              resetTaskForm();
+            }
+            onDelete(task.id);
           },
-          onDelete: () => onDelete(task.id),
         }))}
       />
     </section>
