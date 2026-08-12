@@ -1,86 +1,17 @@
 <!doctype html>
 <html lang="zh-CN">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="人生小票机，把今天的小事打印成一张荒诞又温柔的小票。"
-    >
-    <title>人生小票机</title>
-    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="src/styles.css">
+      content="一个纯前端、IndexedDB 本地存储的工作生活管理网站。"
+    />
+    <title>Work Life Hub</title>
+    <script type="module" crossorigin src="./assets/index-CxbiEkAO.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-YGTZn4Et.css">
   </head>
   <body>
-    <div class="background-scene" aria-hidden="true"></div>
-    <main class="app-shell" data-app>
-      <section class="control-panel" aria-labelledby="app-title">
-        <header class="hero">
-          <p class="eyebrow">Life Receipt Machine</p>
-          <h1 id="app-title">人生小票机</h1>
-          <p class="subtitle">把今天的小事，打印成一张荒诞又温柔的小票。</p>
-        </header>
-
-        <form class="receipt-form" data-receipt-form>
-          <label for="daily-event">今天发生了什么？</label>
-          <div class="typing-field" data-typing-field>
-            <textarea
-              id="daily-event"
-              name="daily-event"
-              data-input
-              rows="5"
-            ></textarea>
-            <div class="typing-text-effect" data-typing-effect aria-hidden="true"></div>
-            <div class="typing-placeholder" data-placeholder-overlay aria-hidden="true">
-              <span class="typing-placeholder-primary">今天发生了什么？</span>
-              <span class="typing-placeholder-example">
-                <span data-placeholder-phrase>比如：我又熬夜了 / 下雨没带伞 / 今天被夸了</span>
-              </span>
-            </div>
-          </div>
-
-          <p class="prompt-label">灵感示例：点击后填入，也可以改成你自己的事</p>
-          <div class="prompt-chips" aria-label="灵感示例">
-            <button type="button" class="chip" data-prompt="今天有点累，但还是撑过去了">有点累</button>
-            <button type="button" class="chip" data-prompt="今天遇到一个很小但很亮的开心瞬间">小确幸</button>
-            <button type="button" class="chip" data-prompt="今天有点倒霉，但回头想想又很好笑">倒霉但好笑</button>
-          </div>
-
-          <p class="form-message" data-message role="status" aria-live="polite"></p>
-
-          <button type="button" class="primary-action" data-print-button>打印小票</button>
-        </form>
-      </section>
-
-      <section class="preview-panel" aria-label="小票预览">
-        <div class="receipt-stage">
-          <article class="receipt is-placeholder" data-receipt>
-            <div class="receipt-content" data-receipt-content>
-              <p class="receipt-store">人生便利店</p>
-              <p class="receipt-meta">RECEIPT #20260809</p>
-              <hr>
-              <p>今日情绪             1份       待打印</p>
-              <p>好运返现             ?枚       排队中</p>
-              <p>精神电量             --%       检测中</p>
-              <hr>
-              <p>店员留言：</p>
-              <p>先写下一件小事，收银员马上开机。</p>
-              <p class="receipt-footer">谢谢惠顾，欢迎再来人间。</p>
-            </div>
-          </article>
-        </div>
-
-        <div class="receipt-actions" data-actions hidden>
-          <button type="button" data-regenerate>重新打印</button>
-          <button type="button" data-switch-style>换个风格</button>
-          <button type="button" data-save-image>保存图片</button>
-          <button type="button" data-copy-text>复制文字</button>
-        </div>
-      </section>
-    </main>
-
-    <footer class="site-note">内容仅供娱乐，不代表命运真的这么结账。</footer>
-
-    <script type="module" src="src/app.js"></script>
+    <div id="root"></div>
   </body>
 </html>
