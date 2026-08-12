@@ -1,0 +1,213 @@
+.page-shell {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(122deg, rgba(117, 144, 123, 0.88) 0 28%, transparent 28% 58%, rgba(213, 171, 139, 0.66) 58% 100%),
+    linear-gradient(32deg, #4d6256 0%, #384942 47%, #745c52 100%);
+}
+
+.glass-backdrop {
+  position: fixed;
+  inset: 0;
+  border: 2rpx solid rgba(255, 255, 255, 0.2);
+  background: rgba(241, 247, 239, 0.1);
+}
+
+.page-content {
+  position: relative;
+  z-index: 1;
+  padding: 64rpx 32rpx 48rpx;
+}
+
+.hero {
+  margin-bottom: 40rpx;
+}
+
+.eyebrow {
+  display: block;
+  color: #ffcc66;
+  font-size: 22rpx;
+  font-weight: 700;
+  letter-spacing: 2rpx;
+}
+
+.title {
+  display: block;
+  margin-top: 16rpx;
+  color: #fffaf0;
+  font-size: 72rpx;
+  font-weight: 800;
+  line-height: 1.08;
+}
+
+.subtitle {
+  display: block;
+  margin-top: 18rpx;
+  color: rgba(255, 250, 240, 0.76);
+  font-size: 30rpx;
+  line-height: 1.65;
+}
+
+.composer {
+  padding: 32rpx;
+  border: 2rpx solid rgba(255, 255, 255, 0.18);
+  border-radius: 16rpx;
+  background: rgba(25, 30, 27, 0.48);
+  box-shadow: 0 24rpx 60rpx rgba(20, 31, 26, 0.22);
+}
+
+.field-label {
+  display: block;
+  margin-bottom: 18rpx;
+  color: #fffaf0;
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.event-input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 220rpx;
+  padding: 24rpx;
+  border: 2rpx solid rgba(255, 255, 255, 0.18);
+  border-radius: 12rpx;
+  background: rgba(19, 25, 22, 0.64);
+  color: #fffaf0;
+  font-size: 30rpx;
+  line-height: 1.7;
+}
+
+.input-placeholder {
+  color: rgba(237, 230, 216, 0.5);
+}
+
+.prompt-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-top: 22rpx;
+}
+
+.prompt-button {
+  margin: 0;
+  padding: 0 22rpx;
+  min-height: 64rpx;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff8ed;
+  font-size: 26rpx;
+  line-height: 64rpx;
+}
+
+.message {
+  display: block;
+  min-height: 40rpx;
+  margin-top: 16rpx;
+  color: #ffd38a;
+  font-size: 26rpx;
+}
+
+.print-button {
+  width: 100%;
+  margin-top: 22rpx;
+  min-height: 98rpx;
+  background: #ffcc66;
+  color: #302008;
+  font-size: 32rpx;
+  font-weight: 800;
+  line-height: 98rpx;
+}
+
+.receipt-stage {
+  min-height: 700rpx;
+  margin-top: 32rpx;
+  padding: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16rpx;
+  background: rgba(25, 30, 27, 0.42);
+}
+
+.receipt-paper,
+.receipt-empty {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 42rpx 36rpx;
+  background: #fffaf0;
+  color: #24211c;
+  box-shadow: 0 22rpx 50rpx rgba(14, 20, 17, 0.28);
+}
+
+.receipt-style {
+  display: block;
+  margin-bottom: 22rpx;
+  text-align: center;
+  color: #76654c;
+  font-size: 24rpx;
+  font-weight: 700;
+  letter-spacing: 2rpx;
+}
+
+.receipt-copy {
+  white-space: pre-wrap;
+  font-family: "Courier New", monospace;
+  font-size: 26rpx;
+  line-height: 1.68;
+}
+
+.receipt-empty {
+  min-height: 460rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.72;
+}
+
+.receipt-empty-store {
+  font-family: "Courier New", monospace;
+  font-size: 34rpx;
+  font-weight: 700;
+}
+
+.receipt-empty-copy {
+  margin-top: 28rpx;
+  color: #665d50;
+  font-size: 28rpx;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.action-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+  margin-top: 24rpx;
+}
+
+.secondary-button {
+  margin: 0;
+  min-height: 82rpx;
+  border: 2rpx solid rgba(255, 255, 255, 0.2);
+  background: rgba(25, 30, 27, 0.48);
+  color: #fffaf0;
+  font-size: 28rpx;
+  line-height: 78rpx;
+}
+
+.footer-note {
+  display: block;
+  margin: 34rpx 0 0;
+  color: rgba(255, 250, 240, 0.58);
+  font-size: 24rpx;
+  text-align: center;
+}
+
+.receipt-canvas {
+  position: fixed;
+  left: -9999rpx;
+  top: -9999rpx;
+  width: 720px;
+  height: 1100px;
+}

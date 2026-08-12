@@ -1,0 +1,18 @@
+{
+  "description": "人生小票机微信小程序",
+  "packOptions": {
+    "ignore": []
+  },
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true
+  },
+  "compileType": "miniprogram",
+  "libVersion": "3.5.6",
+  "appid": "touristappid",
+  "projectname": "life-receipt-machine",
+  "miniprogramRoot": "./"
+}

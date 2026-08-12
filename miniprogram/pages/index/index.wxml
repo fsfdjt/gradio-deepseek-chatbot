@@ -1,0 +1,55 @@
+<view class="page-shell">
+  <view class="glass-backdrop"></view>
+  <view class="page-content">
+    <view class="hero">
+      <text class="eyebrow">LIFE RECEIPT MACHINE</text>
+      <text class="title">人生小票机</text>
+      <text class="subtitle">把今天的小事，打印成一张荒诞又温柔的小票。</text>
+    </view>
+
+    <view class="composer">
+      <text class="field-label">今天发生了什么？</text>
+      <textarea
+        class="event-input"
+        value="{{inputValue}}"
+        maxlength="240"
+        auto-height
+        placeholder="比如：我又熬夜了 / 下雨没带伞 / 今天被夸了"
+        placeholder-class="input-placeholder"
+        bindinput="onInput"
+      />
+      <view class="prompt-row">
+        <button
+          wx:for="{{prompts}}"
+          wx:key="*this"
+          class="prompt-button"
+          data-prompt="{{item}}"
+          bindtap="onPromptTap"
+        >{{item === prompts[0] ? "有点累" : item === prompts[1] ? "小确幸" : "倒霉但好笑"}}</button>
+      </view>
+      <text wx:if="{{message}}" class="message">{{message}}</text>
+      <button class="print-button" loading="{{isGenerating}}" bindtap="onPrintTap">打印小票</button>
+    </view>
+
+    <view class="receipt-stage">
+      <view wx:if="{{receipt}}" class="receipt-paper">
+        <text class="receipt-style">{{receipt.styleName}}</text>
+        <text class="receipt-copy">{{receipt.text}}</text>
+      </view>
+      <view wx:else class="receipt-empty">
+        <text class="receipt-empty-store">人生便利店</text>
+        <text class="receipt-empty-copy">输入一件今天的小事，<br />收银员马上开机。</text>
+      </view>
+    </view>
+
+    <view wx:if="{{receipt}}" class="action-grid">
+      <button class="secondary-button" bindtap="onRegenerateTap">重新打印</button>
+      <button class="secondary-button" bindtap="onSwitchStyleTap">换个风格</button>
+      <button class="secondary-button" bindtap="onSaveTap">保存图片</button>
+      <button class="secondary-button" bindtap="onCopyTap">复制文字</button>
+    </view>
+
+    <text class="footer-note">内容仅供娱乐，不代表命运真的这么结账。</text>
+  </view>
+  <canvas class="receipt-canvas" canvas-id="receiptCanvas"></canvas>
+</view>

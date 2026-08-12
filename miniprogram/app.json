@@ -1,0 +1,14 @@
+{
+  "pages": [
+    "pages/index/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "人生小票机",
+    "navigationBarBackgroundColor": "#385047",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#385047",
+    "backgroundTextStyle": "light"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}
