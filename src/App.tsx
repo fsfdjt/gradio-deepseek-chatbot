@@ -7,13 +7,16 @@ import {
   FolderPlus,
   Gamepad2,
   Home,
+  ListPlus,
+  PanelLeft,
   Plus,
+  Search,
   Settings,
   Trash2,
   Upload,
   Utensils,
 } from "lucide-react";
-import { useEffect, useMemo, useState, type ReactElement } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactElement } from "react";
 import { pages, type PageId } from "./lib/appStructure";
 import { createBackup, parseBackup } from "./lib/backup";
 import {
@@ -87,6 +90,13 @@ const priorityOptions: Array<{ value: Priority; label: string }> = [
 
 const today = todayString();
 
+const navigationGroups: Array<{ label: string; items: PageId[] }> = [
+  { label: "日常", items: ["home", "today", "calendar"] },
+  { label: "生活", items: ["fitness", "diet", "fun"] },
+  { label: "分析", items: ["stats"] },
+  { label: "系统", items: ["project", "settings"] },
+];
+
 export default function App() {
   const [activePage, setActivePage] = useState<PageId>("home");
   const [data, setData] = useState<AppData>(() => createEmptyData());
@@ -96,6 +106,9 @@ export default function App() {
   const [taskFilter, setTaskFilter] = useState<"all" | TaskStatus>("all");
   const [selectedProjectId, setSelectedProjectId] = useState("");
   const [quickProjectName, setQuickProjectName] = useState("");
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [quickMenuOpen, setQuickMenuOpen] = useState(false);
+  const quickProjectInputRef = useRef<HTMLInputElement>(null);
   const [notificationPermission, setNotificationPermission] = useState<
     NotificationPermission | "unsupported"
   >(() => (typeof Notification === "undefined" ? "unsupported" : Notification.permission));
@@ -184,6 +197,11 @@ export default function App() {
     setQuickProjectName("");
   }
 
+  function focusQuickProjectInput() {
+    setSidebarCollapsed(false);
+    window.requestAnimationFrame(() => quickProjectInputRef.current?.focus());
+  }
+
   async function handleEnableNotifications() {
     if (typeof Notification === "undefined") {
       setNotificationPermission("unsupported");
@@ -204,13 +222,13 @@ export default function App() {
   }
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}>
       <aside className="sidebar">
         <div className="brand">
           <span className="brand-mark">
             <Home size={18} />
           </span>
-          <span>Work Life Hub</span>
+          <span className="brand-copy">Work Life Hub</span>
         </div>
         <form
           className="quick-add-project"
@@ -221,6 +239,7 @@ export default function App() {
           }}
         >
           <input
+            ref={quickProjectInputRef}
             value={quickProjectName}
             onChange={(event) => setQuickProjectName(event.target.value)}
             placeholder="快速新增项目"
@@ -231,20 +250,28 @@ export default function App() {
           </button>
         </form>
         <nav className="main-nav" aria-label="主导航">
-          {pages.map((page) => {
-            const Icon = icons[page.id];
-            return (
-              <button
-                key={page.id}
-                type="button"
-                aria-pressed={activePage === page.id}
-                onClick={() => setActivePage(page.id)}
-              >
-                <Icon size={18} />
-                {page.label}
-              </button>
-            );
-          })}
+          {navigationGroups.map((group) => (
+            <div className="nav-group" key={group.label}>
+              <p className="nav-group-label">{group.label}</p>
+              {group.items.map((pageId) => {
+                const page = pages.find((item) => item.id === pageId);
+                if (!page) return null;
+                const Icon = icons[page.id];
+                return (
+                  <button
+                    key={page.id}
+                    type="button"
+                    aria-pressed={activePage === page.id}
+                    onClick={() => setActivePage(page.id)}
+                    title={sidebarCollapsed ? page.label : undefined}
+                  >
+                    <Icon size={18} />
+                    <span>{page.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          ))}
         </nav>
         <div className="sidebar-projects" aria-label="项目列表">
           <p className="sidebar-section-title">项目</p>
@@ -272,17 +299,71 @@ export default function App() {
 
       <main className={`workspace workspace-${layoutPreset.kind}`}>
         <header className="topbar">
-          <div>
+          <div className="topbar-context">
+            <button
+              type="button"
+              className="icon-button"
+              aria-label={sidebarCollapsed ? "展开导航" : "收起导航"}
+              title={sidebarCollapsed ? "展开导航" : "收起导航"}
+              onClick={() => setSidebarCollapsed((value) => !value)}
+            >
+              <PanelLeft size={18} />
+            </button>
+            <span className="topbar-page-icon" aria-hidden="true">
+              {(() => {
+                const Icon = icons[activePage];
+                return <Icon size={18} />;
+              })()}
+            </span>
+            <div>
             <h1>{currentPage.label}</h1>
             <p>{currentPage.description}</p>
+            </div>
           </div>
-          <p className="local-note">数据仅保存在当前浏览器</p>
+          <div className="topbar-actions">
+            <button
+              type="button"
+              className="topbar-action"
+              onClick={() => setMessage("当前数据仅保存在这台电脑的浏览器中")}
+            >
+              <Search size={17} />
+              <span>本地数据</span>
+            </button>
+            <div className="quick-menu-wrap">
+              <button
+                type="button"
+                className="primary-button topbar-action"
+                onClick={() => setQuickMenuOpen((value) => !value)}
+                aria-expanded={quickMenuOpen}
+              >
+                <ListPlus size={17} />
+                <span>快速新增</span>
+              </button>
+              {quickMenuOpen ? (
+                <div className="quick-menu" role="menu">
+                  <button type="button" role="menuitem" onClick={() => { setActivePage("today"); setQuickMenuOpen(false); }}>
+                    新增今日计划
+                  </button>
+                  <button type="button" role="menuitem" onClick={() => { setActivePage("fitness"); setQuickMenuOpen(false); }}>
+                    记录训练
+                  </button>
+                  <button type="button" role="menuitem" onClick={() => { setActivePage("diet"); setQuickMenuOpen(false); }}>
+                    记录饮食
+                  </button>
+                  <button type="button" role="menuitem" onClick={() => { setQuickMenuOpen(false); focusQuickProjectInput(); }}>
+                    新增自定义项目
+                  </button>
+                </div>
+              ) : null}
+            </div>
+            <p className="local-note">仅保存在这台电脑</p>
+          </div>
         </header>
 
         {message ? <p className="app-message">{message}</p> : null}
 
         {activePage === "home" ? (
-          <HomePage
+          <HomePageWorkbench
             data={data}
             summary={summary}
             smartInsights={smartInsights}
@@ -396,6 +477,246 @@ export default function App() {
         ) : null}
       </main>
     </div>
+  );
+}
+
+function HomePageWorkbench({
+  data,
+  summary,
+  smartInsights,
+  timeline,
+  timeRemaining,
+  onTaskDone,
+  onAddMemo,
+  onOpenPage,
+}: {
+  data: AppData;
+  summary: ReturnType<typeof getDashboardSummary>;
+  smartInsights: ReturnType<typeof getSmartInsights>;
+  timeline: ReturnType<typeof getHomeTimeline>;
+  timeRemaining: ReturnType<typeof getTimeRemainingPercentages>;
+  onTaskDone: (id: string, done: boolean) => void;
+  onAddMemo: (content: string) => void;
+  onOpenPage: (page: PageId) => void;
+}) {
+  const [memo, setMemo] = useState("");
+  const visibleTasks = data.tasks.filter((task) => task.plannedDate === today).slice(0, 4);
+  const attentionTasks = summary.highPriorityOpenTasks.slice(0, 3);
+  const progress = summary.todayTaskCount
+    ? Math.round((summary.doneTaskCount / summary.todayTaskCount) * 100)
+    : 0;
+
+  return (
+    <section className="dashboard-page page-stack">
+      <header className="dashboard-hero">
+        <div>
+          <span className="eyebrow">今天</span>
+          <h2>从最重要的一件事开始</h2>
+          <p>把计划、身体、饮食和休息放在同一个本地工作台里</p>
+        </div>
+        <button type="button" className="primary-button" onClick={() => onOpenPage("today")}>
+          <Plus size={18} />
+          添加今日计划
+        </button>
+      </header>
+
+      <section className="overview-strip" aria-label="今日进度">
+        <div>
+          <span>今日进度</span>
+          <strong>{progress}<small>%</small></strong>
+        </div>
+        <div className="overview-progress">
+          <span style={{ width: `${progress}%` }} />
+        </div>
+        <div>
+          <span>已完成</span>
+          <strong>{summary.doneTaskCount}<small> / {summary.todayTaskCount}</small></strong>
+        </div>
+        <div>
+          <span>待处理</span>
+          <strong>{summary.openTaskCount}</strong>
+        </div>
+      </section>
+
+      <nav className="dashboard-command-strip" aria-label="快速操作">
+        <span>快速操作</span>
+        <button type="button" onClick={() => onOpenPage("today")}><ListPlus size={17} />新建计划</button>
+        <button type="button" onClick={() => onOpenPage("fitness")}><Dumbbell size={17} />记录训练</button>
+        <button type="button" onClick={() => onOpenPage("diet")}><Utensils size={17} />记录饮食</button>
+        <button type="button" onClick={() => onOpenPage("project")}><FolderPlus size={17} />打开项目</button>
+      </nav>
+
+      <div className="dashboard-grid">
+        <div className="dashboard-primary">
+          <section className="panel">
+            <div className="panel-heading">
+              <div>
+                <h2>今日时间线</h2>
+                <p className="section-caption">按开始时间排列今天要做的事</p>
+              </div>
+              <button type="button" onClick={() => onOpenPage("today")}>打开计划</button>
+            </div>
+            <div className="timeline-list">
+              {timeline.length ? timeline.map((item) => (
+                <article className="timeline-item" key={`${item.module}-${item.id}`}>
+                  <time>{item.timeLabel}</time>
+                  <div>
+                    <strong>{item.title}</strong>
+                    <span>{item.module}</span>
+                  </div>
+                </article>
+              )) : <p className="empty-text">今天还没有可排序的记录</p>}
+            </div>
+          </section>
+
+          <section className="panel">
+            <div className="panel-heading">
+              <div>
+                <h2>今日重点</h2>
+                <p className="section-caption">完成一件，再决定下一件</p>
+              </div>
+            </div>
+            <div className="item-list">
+              {visibleTasks.length ? visibleTasks.map((task) => (
+                <label className="list-row" key={task.id}>
+                  <input
+                    type="checkbox"
+                    checked={task.status === "done"}
+                    onChange={(event) => onTaskDone(task.id, event.target.checked)}
+                  />
+                  <span>{task.title}</span>
+                  <small>{priorityLabel(task.priority)}</small>
+                </label>
+              )) : <p className="empty-text">今天还没有任务</p>}
+            </div>
+          </section>
+        </div>
+
+        <aside className="dashboard-aside">
+          <section className="panel memo-section">
+            <div className="panel-heading">
+              <div>
+                <h2>快速备忘</h2>
+                <p className="section-caption">先记下来，之后再整理</p>
+              </div>
+            </div>
+            <form
+              className="memo-pad"
+              onSubmit={(event) => {
+                event.preventDefault();
+                if (memo.trim()) {
+                  onAddMemo(memo);
+                  setMemo("");
+                }
+              }}
+            >
+              <textarea
+                value={memo}
+                onChange={(event) => setMemo(event.target.value)}
+                placeholder="记下一闪而过的想法"
+                rows={4}
+              />
+              <button type="submit" className="primary-button">
+                <Plus size={17} />
+                保存备忘
+              </button>
+            </form>
+            <div className="item-list">
+              {summary.recentMemos.map((item) => (
+                <p className="compact-item" key={item.id}>{item.content}</p>
+              ))}
+              {!summary.recentMemos.length ? <p className="empty-text">暂无备忘</p> : null}
+            </div>
+          </section>
+
+          <section className="panel">
+            <div className="panel-heading">
+              <div>
+                <h2>需要关注</h2>
+                <p className="section-caption">优先级高且还没有完成的事项</p>
+              </div>
+            </div>
+            <div className="attention-list">
+              {attentionTasks.length ? attentionTasks.map((task) => (
+                <button type="button" className="attention-item" key={task.id} onClick={() => onOpenPage("today")}>
+                  <span className="attention-mark" />
+                  <span>{task.title}</span>
+                  <small>{task.startTime}</small>
+                </button>
+              )) : <p className="empty-text">目前没有紧急事项</p>}
+            </div>
+          </section>
+
+          <section className="panel">
+            <div className="panel-heading">
+              <div>
+                <h2>剩余时间</h2>
+                <p className="section-caption">给今天留一点余地</p>
+              </div>
+            </div>
+            <div className="time-remaining-list">
+              <TimeRemainingRow label="今日" value={timeRemaining.day} />
+              <TimeRemainingRow label="本周" value={timeRemaining.week} />
+              <TimeRemainingRow label="本月" value={timeRemaining.month} />
+              <TimeRemainingRow label="本年" value={timeRemaining.year} />
+            </div>
+          </section>
+        </aside>
+      </div>
+
+      <section className="panel">
+        <div className="panel-heading">
+          <div>
+            <h2>模块摘要</h2>
+            <p className="section-caption">只看最近真正需要留意的内容</p>
+          </div>
+        </div>
+        <div className="summary-grid">
+          <button type="button" className="summary-tile" onClick={() => onOpenPage("fitness")}>
+            <span className="summary-tile-icon"><Dumbbell size={18} /></span>
+            <span><strong>健身计划</strong><small>{summary.todayWorkout ? "今天已记录训练" : "今天还没有训练"}</small></span>
+          </button>
+          <button type="button" className="summary-tile" onClick={() => onOpenPage("diet")}>
+            <span className="summary-tile-icon"><Utensils size={18} /></span>
+            <span><strong>饮食计划</strong><small>{summary.todayWaterCups} 杯水 · {summary.todayMealCount} 条记录</small></span>
+          </button>
+          <button type="button" className="summary-tile" onClick={() => onOpenPage("fun")}>
+            <span className="summary-tile-icon"><Gamepad2 size={18} /></span>
+            <span><strong>游戏娱乐</strong><small>{summary.activeEntertainment.length} 个项目进行中</small></span>
+          </button>
+          <button type="button" className="summary-tile" onClick={() => onOpenPage("project")}>
+            <span className="summary-tile-icon"><FolderPlus size={18} /></span>
+            <span><strong>自定义项目</strong><small>{summary.recentCustomProjects.length} 个项目最近更新</small></span>
+          </button>
+        </div>
+      </section>
+
+      <section className="panel ai-panel">
+        <div className="panel-heading">
+          <div>
+            <h2>今日复盘提示</h2>
+            <p className="section-caption">根据你保存在本机的数据生成</p>
+          </div>
+        </div>
+        <div className="smart-insight">
+          <strong>{smartInsights.headline}</strong>
+          <p>{smartInsights.summary}</p>
+        </div>
+        <div className="smart-signal-list">
+          {smartInsights.signals.map((signal) => (
+            <div key={signal.label} className="smart-signal">
+              <span>{signal.label}</span>
+              <strong>{signal.value}</strong>
+            </div>
+          ))}
+        </div>
+        <div className="smart-recommendations">
+          {smartInsights.recommendations.map((item) => (
+            <p key={item} className="smart-recommendation">{item}</p>
+          ))}
+        </div>
+      </section>
+    </section>
   );
 }
 
