@@ -20,6 +20,12 @@ npm install
 npm run dev
 ```
 
+If `http://localhost:5173/` stops working after the computer sleeps or the terminal is closed, start the local preview again:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/start-dev-server.ps1
+```
+
 ## 测试
 
 ```bash
