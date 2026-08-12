@@ -505,6 +505,16 @@ function HomePageWorkbench({
   const progress = summary.todayTaskCount
     ? Math.round((summary.doneTaskCount / summary.todayTaskCount) * 100)
     : 0;
+  const focusItems = timeline.filter((item) => item.module === "today");
+  const currentFocus = focusItems[0] ?? timeline[0];
+  const nextFocus = focusItems[1] ?? timeline.find((item) => item.id !== currentFocus?.id);
+  const focusDistribution = [
+    { label: "计划", value: data.tasks.filter((task) => task.plannedDate === today).length },
+    { label: "训练", value: data.workouts.filter((item) => item.date === today).length },
+    { label: "饮食", value: data.meals.filter((item) => item.date === today).length },
+    { label: "娱乐", value: summary.activeEntertainment.length },
+  ];
+  const maxFocusDistribution = Math.max(1, ...focusDistribution.map((item) => item.value));
 
   return (
     <section className="dashboard-page page-stack">
@@ -535,6 +545,55 @@ function HomePageWorkbench({
         <div>
           <span>待处理</span>
           <strong>{summary.openTaskCount}</strong>
+        </div>
+      </section>
+
+      <section className="panel focus-panel">
+        <div className="focus-main">
+          <span className="eyebrow">当前焦点</span>
+          {currentFocus ? (
+            <>
+              <h2>{currentFocus.title}</h2>
+              <p>
+                {currentFocus.timeLabel} · 来自 {currentFocus.module}
+              </p>
+            </>
+          ) : (
+            <>
+              <h2>今天还没有安排</h2>
+              <p>先安排一个具体行动，让今天开始运转</p>
+            </>
+          )}
+          <div className="focus-actions">
+            <button type="button" className="primary-button" onClick={() => onOpenPage("today")}>
+              <ListPlus size={17} />
+              添加今日计划
+            </button>
+            <button type="button" className="secondary-button" onClick={() => onOpenPage("fitness")}>
+              <Dumbbell size={17} />
+              记录训练
+            </button>
+            <button type="button" className="secondary-button" onClick={() => onOpenPage("diet")}>
+              <Utensils size={17} />
+              记录饮食
+            </button>
+          </div>
+        </div>
+        <div className="focus-side">
+          <div className="next-focus">
+            <span>下一件事</span>
+            <strong>{nextFocus?.title ?? "先把第一件事写下来"}</strong>
+            <small>{nextFocus ? nextFocus.timeLabel : "未安排时间"}</small>
+          </div>
+          <div className="focus-distribution" aria-label="今日记录分布">
+            {focusDistribution.map((item) => (
+              <div className="focus-distribution-row" key={item.label}>
+                <span>{item.label}</span>
+                <div><span style={{ width: `${(item.value / maxFocusDistribution) * 100}%` }} /></div>
+                <strong>{item.value}</strong>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
