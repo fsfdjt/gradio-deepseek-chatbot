@@ -1,5 +1,7 @@
 # Work Life Hub
 
+Online preview: https://fsfdjt.github.io/gradio-deepseek-chatbot/
+
 Work Life Hub 是一个纯前端的工作生活管理网站，可以部署到 GitHub Pages。它无需登录，打开即可使用；业务数据保存在用户自己浏览器的 IndexedDB 中，不需要后端服务，也不会上传个人数据。
 
 ## 功能
